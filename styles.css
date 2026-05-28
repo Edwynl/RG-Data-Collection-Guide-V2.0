@@ -1078,3 +1078,250 @@ body::before {
 }
 .wf-dq-item svg { flex-shrink: 0; color: var(--accent-primary); }
 .wf-dq-item strong { color: var(--text-primary); }
+
+/* ═══════════════════════════════════════════════════════════
+   RESPONSIVE LAYOUT
+   ═══════════════════════════════════════════════════════════ */
+@media (max-width: 1080px) {
+    .sidebar {
+        width: 220px;
+        padding: 24px 14px;
+    }
+
+    .main-content {
+        padding: 28px 22px;
+    }
+
+    .section-title {
+        font-size: 2rem;
+    }
+
+    .grid {
+        grid-template-columns: 1fr;
+        gap: 18px;
+    }
+
+    .wf-wrap {
+        grid-template-columns: 1fr;
+    }
+
+    .wf-panel {
+        min-height: 120px;
+    }
+}
+
+@media (max-width: 768px) {
+    body {
+        display: block;
+        min-height: auto;
+    }
+
+    .sidebar {
+        position: sticky;
+        top: 0;
+        z-index: 200;
+        width: 100%;
+        padding: 14px 12px 10px;
+        border-right: none;
+        border-bottom: 1px solid var(--glass-border);
+    }
+
+    .sidebar-header {
+        margin-bottom: 12px;
+    }
+
+    .logo-icon {
+        width: 34px;
+        height: 34px;
+    }
+
+    .logo-text {
+        font-size: 1.05rem;
+    }
+
+    .sidebar-nav {
+        display: flex;
+        gap: 8px;
+        overflow-x: auto;
+        padding-bottom: 4px;
+        scrollbar-width: thin;
+    }
+
+    .sidebar-nav::-webkit-scrollbar {
+        height: 6px;
+    }
+
+    .sidebar-nav::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.15);
+        border-radius: 99px;
+    }
+
+    .nav-item {
+        flex: 0 0 auto;
+        margin-bottom: 0;
+        padding: 10px 12px;
+        gap: 8px;
+        white-space: nowrap;
+        font-size: 0.85rem;
+    }
+
+    .main-content {
+        height: auto;
+        overflow: visible;
+        padding: 18px 14px 26px;
+    }
+
+    .hero-section {
+        margin-bottom: 24px;
+    }
+
+    .section-title {
+        font-size: 1.6rem;
+        line-height: 1.15;
+        margin-bottom: 8px;
+    }
+
+    .section-desc {
+        font-size: 0.95rem;
+    }
+
+    .grid {
+        margin-top: 18px;
+        gap: 14px;
+    }
+
+    .checklist-item {
+        padding: 14px;
+        gap: 12px;
+    }
+
+    .progress-bar-wrap {
+        max-width: 100%;
+        gap: 10px;
+    }
+
+    .progress-label {
+        min-width: auto;
+        font-size: 0.72rem;
+    }
+
+    .modal {
+        padding: 10px;
+    }
+
+    .modal-content {
+        width: 100%;
+        max-width: none;
+        max-height: 86vh;
+        padding: 24px 16px 18px;
+        border-radius: 14px;
+    }
+
+    .close-modal {
+        top: 12px;
+        right: 12px;
+        width: 30px;
+        height: 30px;
+    }
+
+    .modal-content h2 {
+        font-size: 1.15rem;
+        margin-bottom: 16px;
+        padding-right: 30px;
+    }
+
+    .workflow-section {
+        margin-top: 28px;
+    }
+
+    .workflow-section-title {
+        font-size: 1.1rem;
+    }
+
+    .wf-wrap {
+        gap: 12px;
+    }
+
+    .wf-diagram {
+        min-height: 170px;
+        padding: 14px 12px;
+        justify-content: flex-start;
+        gap: 10px;
+        overflow-x: auto;
+        overflow-y: hidden;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .wf-diagram::-webkit-scrollbar {
+        height: 6px;
+    }
+
+    .wf-diagram::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.16);
+        border-radius: 99px;
+    }
+
+    .wf-panel {
+        padding: 14px 12px;
+    }
+
+    .wf-node-label {
+        font-size: 0.68rem;
+    }
+
+    .wf-node-sublabel {
+        font-size: 0.56rem;
+    }
+
+    .wf-node--client .wf-node-inner,
+    .wf-node--mvd .wf-node-inner,
+    .wf-node--branch .wf-node-inner,
+    .wf-node--email .wf-node-inner {
+        min-width: 92px;
+        padding: 13px 10px;
+    }
+
+    .wf-node--leaf .wf-node-inner {
+        min-width: 78px;
+        padding: 7px 10px;
+    }
+
+    .wf-drawer-inner {
+        padding: 16px 12px 14px;
+        overflow-x: auto;
+    }
+
+    .wf-drawer-title {
+        font-size: 0.88rem;
+    }
+
+    .wf-drawer-title span {
+        display: inline-block;
+        margin-left: 8px;
+        margin-top: 6px;
+    }
+
+    .wf-drawer-meta {
+        gap: 10px;
+        padding: 10px 12px;
+        margin-bottom: 14px;
+    }
+
+    .wf-drawer-meta-item,
+    .wf-dq-item {
+        font-size: 0.68rem;
+    }
+
+    .wf-dp-table {
+        min-width: 560px;
+    }
+
+    .wf-legend {
+        gap: 10px 14px;
+        margin-top: 12px;
+    }
+
+    .wf-legend-item {
+        font-size: 0.66rem;
+    }
+}
