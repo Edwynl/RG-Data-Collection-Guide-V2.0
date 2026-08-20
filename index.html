@@ -5,11 +5,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RG Data Requirement | Retragreen</title>
+    <link rel="icon" href="favicon.svg" type="image/svg+xml">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css?v=2.1">
 </head>
 
 <body>
@@ -44,6 +45,15 @@
                     <polyline points="10 9 9 9 8 9"></polyline>
                 </svg>
                 Information
+            </a>
+            <a href="#analyse" class="nav-item" data-view="analyse">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="20" x2="18" y2="10"></line>
+                    <line x1="12" y1="20" x2="12" y2="4"></line>
+                    <line x1="6" y1="20" x2="6" y2="14"></line>
+                    <line x1="2" y1="20" x2="22" y2="20"></line>
+                </svg>
+                Analyse Data
             </a>
             <a href="#bms" class="nav-item" data-view="bms">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -233,6 +243,118 @@
 
             </div><!-- .workflow-section -->
 
+        </section>
+
+        <section id="analyse" class="view">
+            <div class="hero-section analyse-hero">
+                <div>
+                    <div class="eyebrow">Topology-aware requirement generator</div>
+                    <h1 class="section-title">Build your HVAC data requirement</h1>
+                    <p class="section-desc">Tell us what is installed. We will show only the points that apply to your system and expand standard tags for every equipment instance.</p>
+                </div>
+                <div class="profile-state"><span class="profile-state-dot"></span><span id="profileStateText">Profile ready</span></div>
+            </div>
+
+            <div class="analyse-layout">
+                <aside class="glass-card equipment-panel" aria-label="Equipment profile">
+                    <div class="panel-heading">
+                        <span class="step-number">01</span>
+                        <div><h2>Equipment profile</h2><p>Select everything installed at this site.</p></div>
+                    </div>
+
+                    <fieldset class="config-group">
+                        <legend>Cooling source</legend>
+                        <label class="config-option"><input type="checkbox" data-system="waterCooled" checked><span><strong>Water-cooled chiller</strong><small>Chiller, CHW and condenser loops</small></span></label>
+                        <label class="config-option"><input type="checkbox" data-system="airCooled"><span><strong>Air-cooled chiller</strong><small>Chiller and CHW loop only</small></span></label>
+                        <label class="config-option"><input type="checkbox" data-system="dx"><span><strong>DX / Packaged</strong><small>Direct expansion equipment</small></span></label>
+                        <label class="config-option"><input type="checkbox" data-system="vrf"><span><strong>VRF / VRV</strong><small>Outdoor and indoor units</small></span></label>
+                    </fieldset>
+
+                    <fieldset class="config-group" id="distributionGroup">
+                        <legend>CHW distribution</legend>
+                        <label class="config-option compact"><input type="radio" name="distribution" value="variablePrimary" checked><span><strong>Variable primary flow</strong></span></label>
+                        <label class="config-option compact"><input type="radio" name="distribution" value="primarySecondary"><span><strong>Primary-secondary</strong></span></label>
+                        <label class="config-option compact"><input type="radio" name="distribution" value="constant"><span><strong>Constant flow</strong></span></label>
+                    </fieldset>
+
+                    <fieldset class="config-group">
+                        <legend>Air side &amp; terminal units</legend>
+                        <div class="option-grid">
+                            <label class="config-option compact"><input type="checkbox" data-system="ahu" checked><span><strong>AHU</strong></span></label>
+                            <label class="config-option compact"><input type="checkbox" data-system="vav"><span><strong>VAV</strong></span></label>
+                            <label class="config-option compact"><input type="checkbox" data-system="fcu"><span><strong>FCU</strong></span></label>
+                            <label class="config-option compact"><input type="checkbox" data-system="doas"><span><strong>DOAS</strong></span></label>
+                        </div>
+                        <label class="select-label" for="ahuCoilType">AHU cooling type</label>
+                        <select id="ahuCoilType" class="config-select">
+                            <option value="chw">Chilled water coil</option>
+                            <option value="dx">DX coil</option>
+                            <option value="none">No cooling coil / unknown</option>
+                        </select>
+                    </fieldset>
+
+                    <fieldset class="config-group quantity-group">
+                        <legend>Equipment quantities</legend>
+                        <div id="quantityFields" class="quantity-grid"></div>
+                    </fieldset>
+
+                    <button type="button" class="btn btn-secondary btn-full" id="resetProfile">Reset profile</button>
+                </aside>
+
+                <div class="analyse-results">
+                    <div class="result-intro glass-card">
+                        <div class="panel-heading">
+                            <span class="step-number">02</span>
+                            <div><h2>Your applicable points</h2><p>Requirements update instantly when the equipment profile changes.</p></div>
+                        </div>
+                        <div class="result-stats" id="resultStats"></div>
+                    </div>
+
+                    <div class="pairing-callout">
+                        <div class="pairing-icon">↔</div>
+                        <div><strong>Collect command and feedback together</strong><p>Where available, provide both the Setpoint / Command and Feedback / Measured Value. This enables tracking-error, hunting, saturation and override analysis.</p></div>
+                    </div>
+
+                    <div class="catalogue-toolbar">
+                        <div class="filter-tabs" id="classFilters" aria-label="Requirement class filters">
+                            <button type="button" class="filter-tab active" data-class-filter="all">All <span id="allCount">0</span></button>
+                            <button type="button" class="filter-tab" data-class-filter="core">Must have</button>
+                            <button type="button" class="filter-tab" data-class-filter="conditional">If applicable</button>
+                            <button type="button" class="filter-tab" data-class-filter="recommended">Recommended</button>
+                            <button type="button" class="filter-tab" data-class-filter="optional">Optional</button>
+                            <button type="button" class="filter-tab" data-class-filter="derived">Calculated</button>
+                        </div>
+                        <div class="toolbar-controls">
+                            <label class="search-box"><span>⌕</span><input id="pointSearch" type="search" placeholder="Search point or tag…"></label>
+                            <select id="sideFilter" class="config-select compact-select" aria-label="Filter by side">
+                                <option value="all">All sides</option><option value="Water">Water side</option><option value="Air">Air side</option><option value="Common">Common</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="catalogue-card glass-card">
+                        <div class="catalogue-table-wrap">
+                            <table class="catalogue-table">
+                                <thead><tr><th>Data point</th><th>Standard tag</th><th>Requirement</th><th>Unit</th><th>Client status</th><th><span class="sr-only">Why needed</span></th></tr></thead>
+                                <tbody id="catalogueBody"></tbody>
+                            </table>
+                        </div>
+                        <div class="catalogue-empty" id="catalogueEmpty" hidden>No applicable points match these filters.</div>
+                    </div>
+
+                    <div class="export-panel glass-card">
+                        <div class="panel-heading">
+                            <span class="step-number">03</span>
+                            <div><h2>Export client deliverables</h2><p>Download the requirement register or a ready-to-fill historical data template.</p></div>
+                        </div>
+                        <div class="export-actions">
+                            <button type="button" class="btn btn-primary" id="exportRequirements">Download requirement CSV</button>
+                            <button type="button" class="btn btn-secondary" id="exportTemplate">Download historical template</button>
+                        </div>
+                        <p class="export-note">Historical template format: Timestamp first, UTF-8 CSV, one column per expanded standard tag. Recommended interval: 5–15 minutes.</p>
+                    </div>
+                </div>
+            </div>
         </section>
 
         <section id="forms" class="view">
@@ -694,7 +816,7 @@
         </div>
     </div>
 
-    <script src="app.js"></script>
+    <script src="app.js?v=2.1"></script>
 </body>
 
 </html>
