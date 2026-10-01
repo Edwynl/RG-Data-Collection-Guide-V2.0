@@ -577,6 +577,160 @@ body::before {
     min-width: auto;
 }
 
+/* ── Rich BMS Guide blocks (wide modal, tables, notes, checklists) ── */
+.modal-content.is-wide {
+    max-width: 960px;
+}
+
+/* list items are flex rows (number badge + text): keep the inline content flowing
+   inside one child instead of turning every <strong>/<code> into its own box */
+.modal-content li > .guide-li {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.guide-lead {
+    margin: 0 0 20px;
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    line-height: 1.6;
+}
+
+.modal-content code {
+    color: #83d9f5;
+    font-family: 'SFMono-Regular', Consolas, monospace;
+    font-size: 0.86em;
+    word-break: break-all;
+}
+
+.guide-note {
+    margin: 0 0 20px;
+    padding: 13px 15px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-left: 3px solid var(--accent-primary);
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.022);
+}
+
+.guide-note.is-warn {
+    border-left-color: #FFBe32;
+    background: rgba(255, 190, 50, 0.04);
+}
+
+.guide-note > strong {
+    display: block;
+    margin-bottom: 5px;
+    color: var(--text-primary);
+    font-size: 0.78rem;
+    letter-spacing: 0.02em;
+}
+
+.guide-note p {
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: 0.82rem;
+    line-height: 1.6;
+}
+
+.guide-table-wrap {
+    margin: 0 0 20px;
+    overflow-x: auto;
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 12px;
+}
+
+.guide-table {
+    width: 100%;
+    min-width: 560px;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.guide-table th {
+    padding: 10px 13px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.09);
+    background: rgba(255, 255, 255, 0.028);
+    color: var(--text-muted);
+    font-size: 0.6rem;
+    font-weight: 750;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.guide-table td {
+    padding: 10px 13px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    color: var(--text-secondary);
+    font-size: 0.74rem;
+    line-height: 1.5;
+    vertical-align: top;
+}
+
+.guide-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.guide-table tbody tr:hover td {
+    background: rgba(255, 255, 255, 0.018);
+}
+
+.guide-table td:first-child {
+    color: rgba(255, 255, 255, 0.8);
+    font-weight: 600;
+}
+
+.modal-content ul.guide-check li::before {
+    content: '✓';
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 22px;
+    height: 22px;
+    background: rgba(0, 230, 150, 0.12);
+    border: 1px solid rgba(0, 230, 150, 0.25);
+    border-radius: 8px;
+    color: var(--accent-primary);
+    font-size: 0.7rem;
+    font-weight: 700;
+    opacity: 1;
+    margin-top: 1px;
+}
+
+.modal-content ul.guide-refs li {
+    display: block;
+    padding: 9px 0;
+    font-size: 0.78rem;
+}
+
+.modal-content ul.guide-refs li::before {
+    content: '↗';
+    margin-right: 7px;
+    opacity: 0.5;
+}
+
+.guide-refs a {
+    color: var(--accent-blue, #6fc2ff);
+    text-decoration: none;
+    word-break: break-all;
+}
+
+.guide-refs a:hover {
+    text-decoration: underline;
+}
+
+@media (max-width: 720px) {
+    .modal-content.is-wide {
+        max-width: 100%;
+        padding: 32px 22px;
+    }
+
+    .guide-table {
+        min-width: 480px;
+    }
+}
+
+
 .info-card {
     transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }

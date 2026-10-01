@@ -71,14 +71,265 @@ document.addEventListener('DOMContentLoaded', () => {
             ]
         },
         jci: {
-            title: "Johnson Controls Metasys Export Guide",
-            steps: [
-                "Log into the Metasys Site Management Portal (SMP).",
-                "Use the 'Trend Study' tool to select your points.",
-                "Define the time range for historical data (last 12 months minimum).",
-                "Click 'Export' and select 'Comma Separated Values' (CSV).",
-                "Ensure date/time formatting is consistent (YYYY-MM-DD HH:MM).",
-                "Download the generated file."
+            title: "Johnson Controls Metasys — BACnet Point List Export",
+            wide: true,
+            footer: "Send the device sheet + point list to info@steiraair.com · Questions: info@steiraair.com",
+            blocks: [
+                {
+                    type: 'lead',
+                    text: "Written for the site BMS engineer. This guide covers the <strong>point list / point mapping</strong> export — the sheet that tells us which BACnet object holds which measurement. We need it <em>before</em> any historical data is collected: a trend file without a point list cannot be interpreted."
+                },
+                {
+                    type: 'note',
+                    title: "Two different exports — send the right one",
+                    text: "<strong>(1) Point list / point mapping</strong> — which points exist, where they live, what they mean, how they are addressed. This guide. <strong>(2) Historical trend data</strong> — the values over time, see section 7. A trend export cannot replace the point list: it carries no object identifiers, so we cannot map it back to equipment."
+                },
+                {
+                    type: 'section',
+                    title: "1 · What we need you to send",
+                    blocks: [
+                        {
+                            type: 'table',
+                            columns: ['Deliverable', 'Content', 'Why we need it'],
+                            rows: [
+                                ['<strong>A · Device &amp; network sheet</strong>', 'One row per BACnet device — identity and addressing (1.1)', 'Tells us who to talk to, and whether the points are reachable from outside the BMS'],
+                                ['<strong>B · Point list / point mapping</strong>', 'One row per point — name, object type, instance, units, read/write, purpose (1.2)', 'The mapping our data platform uses to name, unit and validate every series']
+                            ]
+                        },
+                        {
+                            type: 'section',
+                            title: '1.1 · Device &amp; network sheet — one row per device',
+                            blocks: [
+                                {
+                                    type: 'table',
+                                    columns: ['Field', 'Where to find it in Metasys', 'Example'],
+                                    rows: [
+                                        ['Site name', 'Navigation Tree / Site Object', 'HQ — Tower A'],
+                                        ['Device Object Name', 'BACnet Device object → Object Name attribute', 'NAE-01'],
+                                        ['Device Instance (BACnet Object Identifier)', 'Device object → Instance (select <strong>Advanced</strong> on the Focus / Network tab)', 'Device, 12'],
+                                        ['Vendor ID / Vendor Name', 'BACnet Device object attributes (AShRAE vendor code)', '17 / Johnson Controls'],
+                                        ['Model Name', 'BACnet Device object attribute', 'NAE8500'],
+                                        ['Firmware Revision / Application Software Version', 'BACnet Device object attributes', '12.0.8 / 4.2'],
+                                        ['BACnet IP address &amp; UDP port', 'Device object → BACnet IP Port (Advanced view)', '10.20.30.40 / 47808'],
+                                        ['Protocol Version / Services / Object Types supported', 'BACnet Device object attributes', 'Rev 19 / COV, ReadProperty…'],
+                                        ['BBMD (only if on another subnet)', 'Site Object → BACnet section → third-party BBMD attribute', '10.20.31.1'],
+                                        ['Number of exposed objects', 'Advanced Search result count (section 2)', '1,284']
+                                    ]
+                                },
+                                {
+                                    type: 'note',
+                                    text: "The BACnet Device object holds the external, visible characteristics of a device, and only one Device object exists in each BACnet device. The Johnson Controls network engine device object also carries attributes and methods beyond the standard set — in the software its object type is labelled <strong>Non-FEC BACnet Device</strong>."
+                                }
+                            ]
+                        },
+                        {
+                            type: 'section',
+                            title: '1.2 · Point list columns — one row per point',
+                            blocks: [
+                                {
+                                    type: 'table',
+                                    columns: ['Column', 'Meaning', 'Where it comes from', 'Priority'],
+                                    rows: [
+                                        ['Tag (our name)', 'The name we will use in the data platform', 'You assign it', 'Required'],
+                                        ['Object Name (native)', 'BACnet Object Name held in the device', 'Advanced Search → Name/Label', 'Required'],
+                                        ['Object Type', 'Analog Input / Output, Binary Input / Output, Multi-state, Trend Log, Schedule…', 'Advanced Search → Type', 'Required'],
+                                        ['Instance Number', 'Instance part of the BACnet Object Identifier', 'Point Configuration → Hardware tab (SCT), or Advanced view', 'Required for BACnet'],
+                                        ['Item Reference', 'Unique Metasys reference of the object', 'Advanced Search → Item Reference', 'Required'],
+                                        ['Description', 'What the point measures or controls', 'Advanced Search → Description', 'Required'],
+                                        ['Units', 'Engineering units (°C, kW, m³/h, %RH)', 'Advanced Search → Units', 'Required'],
+                                        ['Read / Write', 'Whether we may only read, or are also allowed to command', 'Point properties / your policy', 'Required'],
+                                        ['Present value &amp; status', 'Sanity check that the point is alive and not Out of Service', 'Advanced Search → Value, Status', 'Recommended'],
+                                        ['Space / Equipment', 'Grouping used to label the series', 'Advanced Search → Spaces and Equipment', 'Recommended'],
+                                        ['Trend available?', 'Historical logging yes/no, plus interval', 'Trend log objects / your policy', 'Recommended'],
+                                        ['Point source', 'native / integrated / derived-virtual', 'Your confirmation', 'Recommended']
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    type: 'section',
+                    title: '2 · Method A — Metasys UI (Release 12.1 and later) ★ use this if you have it',
+                    blocks: [
+                        {
+                            type: 'steps',
+                            items: [
+                                "Open Metasys UI on a PC. Data export is not supported on tablets or smartphones.",
+                                "Open the <strong>User menu</strong> → <strong>Advanced Search &amp; Reporting</strong>.",
+                                "Build the search with the five filters: Space &amp; Equipment, Name/Label, Object Type, Equipment Definition, Search Locations. Wildcards work, e.g. Name/Label <code>*CHW*</code>.",
+                                "Leave <strong>Exclude Extensions</strong> clear to also list trend, alarm, totalization, load and averaging objects; tick it when you want the points only.",
+                                "Run the search, then click the <strong>Export</strong> button to write a <code>.csv</code>. Select rows first if you only want part of the result.",
+                                "Repeat per system (water / air / electrical) and per site. Save as <code>SiteName_PointList_YYYYMMDD.csv</code>, UTF-8.",
+                                "On Servers you can also export PDF and schedule reports: select the results → ACTIONS → Create Report → Report Type, Date Range, Format → Download immediately or Send to an email address / network location → set Repeat. Saved searches remain available on the Saved From Search tab."
+                            ]
+                        },
+                        {
+                            type: 'note',
+                            title: 'What this CSV does not contain',
+                            tone: 'warn',
+                            text: "The export contains exactly the results columns — Type, Name/Label, Item Reference, Value, Units, Status, Description, Authorization Category, Spaces and Equipment. It does <strong>not</strong> carry the BACnet object instance. Add that column yourself from the point configuration (section 4, step 4), otherwise we cannot address the point over BACnet."
+                        }
+                    ]
+                },
+                {
+                    type: 'section',
+                    title: '3 · Method B — BACnet Workstation ODS / Site Management Portal (Metasys 8.x – 11.x)',
+                    blocks: [
+                        {
+                            type: 'steps',
+                            items: [
+                                "Log in to the Site Management Portal, or to BACnet Workstation ODS on the ODS server.",
+                                "<strong>Queries → Global Search</strong>. Set Object Type to <strong>All (except extensions)</strong>, add your criteria, then click Search.",
+                                "The Search Results table is your object list. To keep it, right-click the Global Search Viewer title bar — or use <strong>Queries → Save Object List</strong> — give it a unique Name, choose the Category, then Save. The list is stored on the Site Director, not as a spreadsheet.",
+                                "To get a spreadsheet: select the rows in the Search Results table, copy to the clipboard and paste into Excel — or print the Search Results table. Object list files live in <code>C:\\ProgramData\\Johnson Controls\\MetasysIII\\File Transfer\\Object Lists</code>.",
+                                "Re-use the saved object list for scheduled reports and global commands instead of re-running the search every time."
+                            ]
+                        },
+                        {
+                            type: 'note',
+                            title: 'Object lists are not backed up',
+                            tone: 'warn',
+                            text: "Object lists are not saved when the database is backed up, and they are deleted when the database is restored — keep your own copy of the list file. Sorting order is not stored in the object list either."
+                        }
+                    ]
+                },
+                {
+                    type: 'section',
+                    title: '4 · Method C — SCT: structure export and mapping check',
+                    blocks: [
+                        {
+                            type: 'steps',
+                            items: [
+                                "Open the site archive database in SCT. SCT edits the archive copy — it never changes the live system directly.",
+                                "Confirm BACnet is exposed: right-click the <strong>Site Object</strong> → <strong>View</strong> → in the Site View click <strong>Advanced</strong> on the right, click <strong>Edit</strong> on the left and scroll to the BACnet section (visible only with Advanced selected) → set <strong>BACnet Site</strong> = True and the <strong>BACnet Encoding Type</strong> used by the BACnet devices → <strong>Save</strong>.",
+                                "Export the point structure: in the navigation tree select the source item — it must sit below the Site object, since a whole site cannot be exported as one item — then <strong>Item menu → Export Item</strong>, enter a unique file name and click Finish. The file is written to <code>C:\\ProgramData\\Johnson Controls\\MetasysIII\\DatabaseFiles</code>. Note the Reference, Class and Class Version shown in the Notice Information dialog; the export does not change the instance number, host name or IP address of a device.",
+                                "Read the BACnet instance numbers: for each point, the <strong>Instance Number</strong> on the Configuration screen's <strong>Hardware</strong> tab must match the instance of the BACnet Object Identifier in the host BACnet device. Click <strong>Advanced</strong> to see the full BACnet object identifier.",
+                                "Map or remap points where needed: <strong>Insert → Field Points</strong> → select the BACnet device → Next → <strong>Assisted</strong> → <strong>Invoke Auto Discovery</strong>. The supervisory controller must be online with the devices on the BACnet/IP network. Auto discovery fills the Native Object Name from the BACnet Object Name and the Instance Number from the BACnet Object Identifier; double-click points individually or use <strong>Map All</strong> → Next → Finish. When working offline choose <strong>Manual</strong> and enter the object type and instance instead.",
+                                "If a value you need does not exist as a native BACnet object, it has to be created in Metasys first — for example with Logic Connector Tool logic blocks (Bool category: AND 2–8, OR 2–8, XOR 2, NOT 1, LTCH latch, plus the arithmetic and timing categories) — and then mapped as a field point. Mark such rows <strong>derived / virtual</strong> in the point list."
+                            ]
+                        },
+                        {
+                            type: 'note',
+                            text: "SCT exports are Metasys archive items, not spreadsheets. Use them to review structure and mapping; the handover file is still the CSV point list."
+                        }
+                    ]
+                },
+                {
+                    type: 'section',
+                    title: '5 · Eight checks before you send it',
+                    blocks: [
+                        {
+                            type: 'checklist',
+                            items: [
+                                "Every BACnet Object Identifier on the network is unique, including the one of the supervisory controller itself. Check the Duplicate Device Identifiers attribute on the BACnet Integration object (Diagnostic view).",
+                                "BACnet Site = True on the Site Object, and the BACnet Encoding Type matches the BACnet devices in the field.",
+                                "<strong>BACnet Integrated Objects</strong> = Include in Object List, if we must read third-party points that Metasys has integrated (BACnet Routing section of the device object: Focus tab on Servers, Network tab on engines).",
+                                "<strong>Routing Mode</strong> = Enabled Without Broadcasts on routed networks, so third-party devices outside the network do not discover routed devices by broadcast and end up seeing each object twice.",
+                                "A BBMD exists for every subnet that is not the supervisory controller segment, and its IP is in the third-party BBMD attribute of the Site object.",
+                                "The field devices answer the Who-Is service — auto discovery cannot see devices that do not.",
+                                "Units, Description and read/write status are filled in. We cannot derive them, and wrong units silently ruin the analysis.",
+                                "Trend availability is confirmed per point (yes/no plus interval) — otherwise we plan to poll every 5–15 minutes."
+                            ]
+                        }
+                    ]
+                },
+                {
+                    type: 'section',
+                    title: '6 · Troubleshooting',
+                    blocks: [
+                        {
+                            type: 'table',
+                            columns: ['Symptom', 'Likely cause', 'Fix'],
+                            rows: [
+                                ['Auto discovery finds no or few devices', 'BACnet Network Address or BACnet IP Port mismatch; wrong MS/TP Network Address', 'Match the BACnet IP Port on the device object (Advanced view) and the MS/TP Network Address on the Hardware tab'],
+                                ['Auto discovery returns duplicate devices', 'Two devices share a BACnet Object Identifier', 'Read Duplicate Device Identifiers on the BACnet Integration object (Diagnostic view) and renumber the duplicates'],
+                                ['Devices on another subnet stay invisible', 'No BBMD for that segment', 'Add the BBMD device IP to the third-party BBMD attribute of the Site object'],
+                                ['A device never appears in discovery', 'It does not support Who-Is, or a discovery filter blocks it', 'Map it manually, or use a BACnet browser, and review any discovery filter settings'],
+                                ['A third-party client sees the same point twice', 'BACnet Integrated Objects = Include in Object List together with Routing Mode = Enabled', 'Set Routing Mode to Enabled Without Broadcasts'],
+                                ['A point is visible in Metasys but not from outside', 'BACnet Integrated Objects = Exclude from Object List, or no read access / point is Out of Service', 'Set Include in Object List, clear Out of Service and confirm read permission'],
+                                ['Export button does nothing', 'Running on a tablet or phone', 'Repeat the export from a PC'],
+                                ['Point reads fail after manual mapping', 'Instance Number entered on the wrong tab, or not matching the host device', 'Re-enter it on the Configuration screen Hardware tab and verify with Advanced']
+                            ]
+                        }
+                    ]
+                },
+                {
+                    type: 'section',
+                    title: '7 · Historical trend data (separate deliverable)',
+                    blocks: [
+                        {
+                            type: 'steps',
+                            items: [
+                                "Log into the Metasys Site Management Portal (SMP).",
+                                "Use the 'Trend Study' tool to select your points.",
+                                "Define the time range for historical data (last 12 months minimum).",
+                                "Click 'Export' and select 'Comma Separated Values' (CSV).",
+                                "Ensure date/time formatting is consistent (YYYY-MM-DD HH:MM).",
+                                "Download the generated file."
+                            ]
+                        },
+                        {
+                            type: 'note',
+                            text: "For long histories, the Metasys Export Utility extracts trend, alarm and audit data from the Network Engine or ADS/ADX into Microsoft Excel (.xls) or Access (.mdb) files, immediately or on a schedule — use it instead of repeated manual exports."
+                        }
+                    ]
+                },
+                {
+                    type: 'section',
+                    title: '8 · Official Johnson Controls references',
+                    blocks: [
+                        {
+                            type: 'refs',
+                            items: [
+                                {
+                                    label: 'BACnet Device Attributes — SCT Help 17.1 (LIT-12011964)',
+                                    url: 'https://docs.johnsoncontrols.com/bas/r/Metasys/en-US/SCT-System-Configuration-Tool-Help/17.1/Insert-Menu/Field-Device/BACnet-Device-Object/BACnet-Device-Attributes'
+                                },
+                                {
+                                    label: 'BACnet Device Object — SCT Help 17.1 (LIT-12011964)',
+                                    url: 'https://docs.johnsoncontrols.com/bas/r/Metasys/en-US/SCT-System-Configuration-Tool-Help/17.1/Insert-Menu/Field-Device/BACnet-Device-Object'
+                                },
+                                {
+                                    label: 'Bool Category (logic blocks) — SCT Help 16.0 (LIT-12011964)',
+                                    url: 'https://docs.johnsoncontrols.com/bas/r/Metasys/en-US/SCT-System-Configuration-Tool-Help/16.0/Insert-Menu/Program-Object/Logic-Connector-Tool-LCT/Logic-Connector-Tool-Concepts/Logic/Logic-Blocks/Bool-Category'
+                                },
+                                {
+                                    label: 'Exposing BACnet information — BACnet Controller Integration TB 15.0 (LIT-1201531)',
+                                    url: 'https://docs.johnsoncontrols.com/bas/r/Metasys/en-US/BACnet-Controller-Integration-Technical-Bulletin/15.0/Detailed-procedures/Exposing-BACnet-information'
+                                },
+                                {
+                                    label: 'Mapping BACnet Field Points using Auto Discovery — TB 14.1 (LIT-1201531)',
+                                    url: 'https://docs.johnsoncontrols.com/bas/r/Metasys/en-US/BACnet-Controller-Integration-Technical-Bulletin/14.1/Detailed-procedures/Mapping-BACnet-Field-Points-using-Auto-Discovery'
+                                },
+                                {
+                                    label: 'Mapping BACnet Field Points manually — TB 15.0 (LIT-1201531)',
+                                    url: 'https://docs.johnsoncontrols.com/bas/r/Metasys/en-US/BACnet-Controller-Integration-Technical-Bulletin/15.0/Detailed-procedures/Mapping-BACnet-Field-Points-manually'
+                                },
+                                {
+                                    label: 'BACnet System Integration troubleshooting guide — TB 14.0 (LIT-1201531)',
+                                    url: 'https://docs.johnsoncontrols.com/bas/r/Metasys/en-US/BACnet-Controller-Integration-Technical-Bulletin/14.0/Troubleshooting/BACnet-System-Integration-troubleshooting-guide'
+                                },
+                                {
+                                    label: 'BACnet Integrated Objects attribute — Metasys UI Help 15.0 (LIT-12011953)',
+                                    url: 'https://docs.johnsoncontrols.com/bas/r/Metasys/en-US/Metasys-UI-Help/15.0/Metasys-UI-and-BACnet-Advanced-Operator-Workstation/Managing-BACnet-devices-and-networks/BACnet-Integrated-Objects-attribute-in-Server-or-engine-device-objects'
+                                },
+                                {
+                                    label: 'Advanced Search — Metasys UI Help 7.0 (LIT-12011953)',
+                                    url: 'https://docs.johnsoncontrols.com/bas/r/Metasys/en-US/Metasys-UI-Help/7.0/Navigating-and-searching/Advanced-search-reporting-bulk-commanding-and-bulk-modifying/Advanced-Search'
+                                },
+                                {
+                                    label: 'Export Item — SCT Help 14.1 (LIT-12011964)',
+                                    url: 'https://docs.johnsoncontrols.com/bas/r/Metasys/en-US/SCT-System-Configuration-Tool-Help/14.1/Item-Menu/Export-Item'
+                                },
+                                {
+                                    label: 'Saving an Object List — Site Management Portal Help 11.0 (LIT-1201793)',
+                                    url: 'https://docs.johnsoncontrols.com/bas/r/Metasys/en-US/Metasys-Site-Management-Portal-Help/11.0/Query-Menu/Saving-an-Object-List'
+                                }
+                            ]
+                        }
+                    ]
+                }
             ]
         },
         schneider: {
@@ -109,24 +360,61 @@ document.addEventListener('DOMContentLoaded', () => {
     // Modal Logic
     const modal = document.getElementById('bmsModal');
     const modalBody = document.getElementById('modalBody');
+    const modalPanel = document.querySelector('.modal-content');
     const bmsCards = document.querySelectorAll('.bms-card');
     const closeModal = document.querySelector('.close-modal');
 
     // ── Shared modal opener ──────────────────────────────────────────────────
-    function openModal(html) {
+    function openModal(html, wide = false) {
         modalBody.innerHTML = html;
+        if (modalPanel) {
+            modalPanel.classList.toggle('is-wide', !!wide);
+            modalPanel.scrollTop = 0;
+        }
         modal.style.display = 'block';
+    }
+
+    // ── Guide block renderer (for guides that need tables, notes, checklists) ─
+    function renderBlocks(blocks) {
+        return blocks.map(block => {
+            switch (block.type) {
+                case 'lead':
+                    return `<p class="guide-lead">${block.text}</p>`;
+                case 'section':
+                    return `<div class="modal-section">${block.title ? `<div class="modal-section-title">${block.title}</div>` : ''}${renderBlocks(block.blocks || [])}</div>`;
+                case 'steps':
+                    return `<ol>${block.items.map(item => `<li><span class="guide-li">${item}</span></li>`).join('')}</ol>`;
+                case 'bullets':
+                    return `<ul>${block.items.map(item => `<li><span class="guide-li">${item}</span></li>`).join('')}</ul>`;
+                case 'checklist':
+                    return `<ul class="guide-check">${block.items.map(item => `<li><span class="guide-li">${item}</span></li>`).join('')}</ul>`;
+                case 'note':
+                    return `<div class="guide-note${block.tone === 'warn' ? ' is-warn' : ''}">${block.title ? `<strong>${block.title}</strong>` : ''}<p>${block.text}</p></div>`;
+                case 'table':
+                    return `<div class="guide-table-wrap"><table class="guide-table"><thead><tr>${block.columns.map(c => `<th>${c}</th>`).join('')}</tr></thead><tbody>${block.rows.map(row => `<tr>${row.map(cell => `<td>${cell}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+                case 'refs':
+                    return `<ul class="guide-refs">${block.items.map(ref => `<li>${ref.label} — <a href="${ref.url}" target="_blank" rel="noopener noreferrer">${ref.url}</a></li>`).join('')}</ul>`;
+                default:
+                    return '';
+            }
+        }).join('');
+    }
+
+    // ── Render a BMS guide: rich block layout, or the legacy numbered steps ───
+    function renderGuide(data) {
+        const body = data.blocks
+            ? renderBlocks(data.blocks)
+            : `<ol>${(data.steps || []).map(step => `<li>${step}</li>`).join('')}</ol>`;
+        const footer = data.footer || 'Need help? Contact info@steiraair.com';
+        return `<h2 class="accent-text">${data.title}</h2>${body}<div class="modal-footer">${footer}</div>`;
     }
 
     // ── BMS Detailed Guides ──────────────────────────────────────────────────
     bmsCards.forEach(card => {
         card.addEventListener('click', () => {
             const data = bmsData[card.getAttribute('data-bms')];
-            openModal(`
-                <h2 class="accent-text">${data.title}</h2>
-                <ol>${data.steps.map(s => `<li>${s}</li>`).join('')}</ol>
-                <div class="modal-footer">Need help? Contact info@steiraair.com</div>
-            `);
+            if (!data) return;
+            openModal(renderGuide(data), data.wide);
         });
     });
 
