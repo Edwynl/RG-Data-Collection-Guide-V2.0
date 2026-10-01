@@ -1,0 +1,96 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 560" width="920" height="560" role="img" aria-label="BMS subnet topology: laptop, switch and BACnet devices on the same subnet range">
+  <defs>
+    <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#00e696"/>
+    </marker>
+    <marker id="ahw" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#FFBe32"/>
+    </marker>
+  </defs>
+
+  <rect x="0" y="0" width="920" height="560" fill="#0A0C0B"/>
+
+  <!-- Title -->
+  <text x="24" y="34" fill="#FFFFFF" font-family="'Segoe UI', Tahoma, sans-serif" font-size="17" font-weight="600">Same-subnet rule</text>
+  <text x="24" y="56" fill="#9AA5A0" font-family="'Segoe UI', Tahoma, sans-serif" font-size="12.5">Your laptop must sit inside the same subnet range as the BMS devices, or nothing will answer.</text>
+
+  <!-- Subnet boundary -->
+  <rect x="20" y="82" width="660" height="446" rx="14" fill="rgba(0,230,150,0.035)" stroke="#00e696" stroke-width="1.6" stroke-dasharray="7 5"/>
+  <rect x="34" y="70" width="250" height="24" rx="6" fill="#0A0C0B"/>
+  <text x="44" y="87" fill="#00e696" font-family="'Segoe UI', Tahoma, sans-serif" font-size="12.5" font-weight="600">BMS subnet  10.20.30.0/24</text>
+
+  <!-- Laptop -->
+  <rect x="44" y="250" width="212" height="128" rx="10" fill="#111614" stroke="rgba(255,255,255,0.16)" stroke-width="1.4"/>
+  <text x="60" y="278" fill="#FFFFFF" font-family="'Segoe UI', Tahoma, sans-serif" font-size="13.5" font-weight="600">Your scan laptop</text>
+  <text x="60" y="302" fill="#00e696" font-family="Consolas, monospace" font-size="12.5">IP   10.20.30.200</text>
+  <text x="60" y="322" fill="#00e696" font-family="Consolas, monospace" font-size="12.5">Mask 255.255.255.0</text>
+  <text x="60" y="342" fill="#FFBe32" font-family="Consolas, monospace" font-size="12.5">GW  (leave blank)</text>
+  <text x="60" y="364" fill="#9AA5A0" font-family="'Segoe UI', Tahoma, sans-serif" font-size="11">Windows 10 / 11 + YABE</text>
+
+  <!-- Cable to switch -->
+  <path d="M256 314 L322 314" stroke="#00e696" stroke-width="2" fill="none" marker-end="url(#ah)"/>
+  <text x="256" y="304" fill="#9AA5A0" font-family="'Segoe UI', Tahoma, sans-serif" font-size="10.5">Cat5e</text>
+
+  <!-- Switch -->
+  <rect x="324" y="282" width="76" height="64" rx="8" fill="#111614" stroke="rgba(255,255,255,0.16)" stroke-width="1.4"/>
+  <text x="336" y="310" fill="#FFFFFF" font-family="'Segoe UI', Tahoma, sans-serif" font-size="12" font-weight="600">Switch</text>
+  <text x="336" y="328" fill="#9AA5A0" font-family="'Segoe UI', Tahoma, sans-serif" font-size="10">unmanaged</text>
+  <circle cx="344" cy="338" r="2.6" fill="#00e696"/>
+  <circle cx="354" cy="338" r="2.6" fill="#00e696"/>
+  <circle cx="364" cy="338" r="2.6" fill="#00e696"/>
+  <circle cx="374" cy="338" r="2.6" fill="#3a4542"/>
+  <circle cx="384" cy="338" r="2.6" fill="#3a4542"/>
+
+  <!-- Links switch -> devices -->
+  <path d="M400 300 L452 216" stroke="#00e696" stroke-width="1.8" fill="none" marker-end="url(#ah)"/>
+  <path d="M400 314 L452 314" stroke="#00e696" stroke-width="1.8" fill="none" marker-end="url(#ah)"/>
+  <path d="M400 328 L452 412" stroke="#00e696" stroke-width="1.8" fill="none" marker-end="url(#ah)"/>
+
+  <!-- Devices -->
+  <rect x="456" y="168" width="204" height="80" rx="9" fill="#111614" stroke="rgba(255,255,255,0.16)" stroke-width="1.4"/>
+  <text x="472" y="194" fill="#FFFFFF" font-family="'Segoe UI', Tahoma, sans-serif" font-size="12.5" font-weight="600">Supervisor / NAE</text>
+  <text x="472" y="214" fill="#9AA5A0" font-family="Consolas, monospace" font-size="11.5">10.20.30.40</text>
+  <text x="472" y="232" fill="#9AA5A0" font-family="'Segoe UI', Tahoma, sans-serif" font-size="10.5">Device instance 12</text>
+
+  <rect x="456" y="266" width="204" height="80" rx="9" fill="#111614" stroke="rgba(255,255,255,0.16)" stroke-width="1.4"/>
+  <text x="472" y="292" fill="#FFFFFF" font-family="'Segoe UI', Tahoma, sans-serif" font-size="12.5" font-weight="600">BACnet/IP gateway</text>
+  <text x="472" y="312" fill="#9AA5A0" font-family="Consolas, monospace" font-size="11.5">10.20.30.1</text>
+  <text x="472" y="330" fill="#9AA5A0" font-family="'Segoe UI', Tahoma, sans-serif" font-size="10.5">Device instance 1</text>
+
+  <rect x="456" y="364" width="204" height="80" rx="9" fill="#111614" stroke="rgba(255,255,255,0.16)" stroke-width="1.4"/>
+  <text x="472" y="390" fill="#FFFFFF" font-family="'Segoe UI', Tahoma, sans-serif" font-size="12.5" font-weight="600">Field controllers</text>
+  <text x="472" y="410" fill="#9AA5A0" font-family="Consolas, monospace" font-size="11.5">10.20.30.71 …</text>
+  <text x="472" y="428" fill="#9AA5A0" font-family="'Segoe UI', Tahoma, sans-serif" font-size="10.5">VAV / FCU / AHU</text>
+
+  <!-- Inside note -->
+  <text x="44" y="452" fill="#00e696" font-family="'Segoe UI', Tahoma, sans-serif" font-size="11.5" font-weight="600">✓ 192.168.1.5 / 24 on the laptop</text>
+  <text x="44" y="470" fill="#9AA5A0" font-family="'Segoe UI', Tahoma, sans-serif" font-size="11">same range, no default gateway — YABE sees all devices</text>
+
+  <text x="44" y="496" fill="#FF6B6B" font-family="'Segoe UI', Tahoma, sans-serif" font-size="11.5" font-weight="600">✕ 192.168.1.5 / 24 + gateway 192.168.1.1</text>
+  <text x="44" y="514" fill="#9AA5A0" font-family="'Segoe UI', Tahoma, sans-serif" font-size="11">different subnet, and the router eats the BACnet broadcast — 0 devices</text>
+
+  <!-- Right callout panel -->
+  <rect x="700" y="82" width="196" height="200" rx="10" fill="rgba(255,190,50,0.05)" stroke="#FFBe32" stroke-width="1.2"/>
+  <text x="716" y="108" fill="#FFBe32" font-family="'Segoe UI', Tahoma, sans-serif" font-size="12.5" font-weight="600">Different subnet?</text>
+  <text x="716" y="132" fill="#C9D2CE" font-family="'Segoe UI', Tahoma, sans-serif" font-size="11">Broadcast discovery stops</text>
+  <text x="716" y="150" fill="#C9D2CE" font-family="'Segoe UI', Tahoma, sans-serif" font-size="11">at the router. Ask the BMS</text>
+  <text x="716" y="168" fill="#C9D2CE" font-family="'Segoe UI', Tahoma, sans-serif" font-size="11">engineer for a BBMD and to</text>
+  <text x="716" y="186" fill="#C9D2CE" font-family="'Segoe UI', Tahoma, sans-serif" font-size="11">register you as a foreign</text>
+  <text x="716" y="204" fill="#C9D2CE" font-family="'Segoe UI', Tahoma, sans-serif" font-size="11">device — or scan on site.</text>
+  <text x="716" y="232" fill="#9AA5A0" font-family="'Segoe UI', Tahoma, sans-serif" font-size="11">A <tspan fill="#FFBe32" font-weight="600">VPN will also break it.</tspan></text>
+  <text x="716" y="252" fill="#9AA5A0" font-family="'Segoe UI', Tahoma, sans-serif" font-size="11">Turn it off before scanning.</text>
+  <text x="716" y="272" fill="#9AA5A0" font-family="'Segoe UI', Tahoma, sans-serif" font-size="11">Turn off Wi-Fi as well.</text>
+
+  <!-- Right check panel -->
+  <rect x="700" y="298" width="196" height="230" rx="10" fill="rgba(0,230,150,0.05)" stroke="rgba(0,230,150,0.4)" stroke-width="1.2"/>
+  <text x="716" y="324" fill="#00e696" font-family="'Segoe UI', Tahoma, sans-serif" font-size="12.5" font-weight="600">Before you plug in</text>
+  <text x="716" y="350" fill="#C9D2CE" font-family="'Segoe UI', Tahoma, sans-serif" font-size="11">1. Ask for the BMS IP list</text>
+  <text x="716" y="372" fill="#C9D2CE" font-family="'Segoe UI', Tahoma, sans-serif" font-size="11">2. Confirm BACnet/IP or</text>
+  <text x="728" y="388" fill="#C9D2CE" font-family="'Segoe UI', Tahoma, sans-serif" font-size="11">MS/TP</text>
+  <text x="716" y="410" fill="#C9D2CE" font-family="'Segoe UI', Tahoma, sans-serif" font-size="11">3. Get written permission</text>
+  <text x="716" y="432" fill="#C9D2CE" font-family="'Segoe UI', Tahoma, sans-serif" font-size="11">4. Pick a free IP that is</text>
+  <text x="728" y="448" fill="#C9D2CE" font-family="'Segoe UI', Tahoma, sans-serif" font-size="11">not on the network</text>
+  <text x="716" y="470" fill="#C9D2CE" font-family="'Segoe UI', Tahoma, sans-serif" font-size="11">5. Never unplug a live</text>
+  <text x="728" y="486" fill="#C9D2CE" font-family="'Segoe UI', Tahoma, sans-serif" font-size="11">BMS network cable</text>
+  <text x="716" y="512" fill="#9AA5A0" font-family="'Segoe UI', Tahoma, sans-serif" font-size="11">Scan read-only only.</text>
+</svg>

@@ -1,0 +1,127 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 560" width="920" height="560" role="img" aria-label="YABE: Functions menu to Add device, choose the Ethernet network adapter and UDP port 47808">
+  <rect x="0" y="0" width="920" height="560" fill="#0A0C0B"/>
+
+  <!-- ══ YABE main window ══ -->
+  <rect x="14" y="36" width="470" height="496" rx="6" fill="#F0F0F0" stroke="#A8A8A8"/>
+  <rect x="14" y="36" width="470" height="28" fill="#F5F5F5"/>
+  <line x1="14" y1="64" x2="484" y2="64" stroke="#D2D2D2"/>
+  <text x="26" y="55" fill="#1A1A1A" font-family="'Segoe UI', Tahoma, sans-serif" font-size="10.5">Yet Another BACnet Explorer</text>
+  <path d="M446 53 h10" stroke="#5A5A5A"/><rect x="464" y="46" width="9" height="9" fill="none" stroke="#5A5A5A"/>
+
+  <!-- menu bar -->
+  <rect x="14" y="64" width="470" height="24" fill="#F0F0F0"/>
+  <g font-family="'Segoe UI', Tahoma, sans-serif" font-size="9.5" fill="#1A1A1A">
+    <text x="28" y="80">File</text>
+    <text x="58" y="80">Functions</text>
+    <text x="118" y="80">BACnet</text>
+    <text x="168" y="80">Objects</text>
+    <text x="218" y="80">View</text>
+    <text x="254" y="80">Options</text>
+    <text x="302" y="80">Help</text>
+  </g>
+  <rect x="52" y="66" width="54" height="20" fill="#E4EEF9"/>
+
+  <!-- open Functions menu -->
+  <rect x="48" y="90" width="168" height="34" fill="#000000" opacity="0.2"/>
+  <rect x="46" y="86" width="168" height="34" fill="#FFFFFF" stroke="#B8B8B8"/>
+  <rect x="47" y="87" width="166" height="32" fill="#E5EFFA"/>
+  <text x="58" y="107" fill="#1A1A1A" font-family="'Segoe UI', Tahoma, sans-serif" font-size="9.5" font-weight="600">Add device</text>
+
+  <!-- toolbar -->
+  <rect x="14" y="88" width="470" height="26" fill="#E8E8E8"/>
+  <g fill="#8A8A8A">
+    <rect x="28" y="94" width="14" height="14" rx="2"/><path d="M32 101 h6 M35 98 v6" stroke="#F0F0F0" stroke-width="1.4"/>
+    <rect x="56" y="94" width="14" height="14" rx="2"/><path d="M59 98 l8 6 l-8 6 z" fill="#F0F0F0"/>
+    <rect x="84" y="94" width="14" height="14" rx="2"/><path d="M87 98 h8 v6 h-8 z" fill="none" stroke="#F0F0F0" stroke-width="1.2"/>
+  </g>
+
+  <!-- empty device tree -->
+  <rect x="24" y="122" width="450" height="188" fill="#FFFFFF" stroke="#C4C4C4"/>
+  <rect x="24" y="122" width="450" height="22" fill="#F0F0F0"/>
+  <text x="34" y="137" fill="#404040" font-family="'Segoe UI', Tahoma, sans-serif" font-size="9">Devices (0)</text>
+  <text x="249" y="200" text-anchor="middle" fill="#8A8A8A" font-family="'Segoe UI', Tahoma, sans-serif" font-size="10.5">No device yet</text>
+  <text x="249" y="220" text-anchor="middle" fill="#A0A0A0" font-family="'Segoe UI', Tahoma, sans-serif" font-size="9.5">Functions &#8250; Add device &#8250; pick the adapter &#8250; Add</text>
+  <text x="249" y="238" text-anchor="middle" fill="#A0A0A0" font-family="'Segoe UI', Tahoma, sans-serif" font-size="9.5">then the tree fills on its own</text>
+
+  <!-- central panel -->
+  <rect x="24" y="318" width="450" height="140" fill="#FFFFFF" stroke="#C4C4C4"/>
+  <rect x="24" y="318" width="450" height="22" fill="#F0F0F0"/>
+  <text x="34" y="333" fill="#404040" font-family="'Segoe UI', Tahoma, sans-serif" font-size="9">Monitor — drag an object here to subscribe</text>
+  <line x1="44" y1="420" x2="454" y2="372" stroke="#E8E8E8"/>
+  <text x="249" y="400" text-anchor="middle" fill="#C0C0C0" font-family="'Segoe UI', Tahoma, sans-serif" font-size="9.5">empty</text>
+
+  <!-- log -->
+  <rect x="24" y="466" width="450" height="46" fill="#1A1A1A"/>
+  <text x="34" y="484" fill="#00e696" font-family="Consolas, monospace" font-size="9">adapter Ethernet  10.20.30.200  udp/47808</text>
+  <text x="34" y="500" fill="#8F9A95" font-family="Consolas, monospace" font-size="9">idle</text>
+
+  <!-- ══ Add device dialog ══ -->
+  <rect x="500" y="36" width="406" height="496" rx="6" fill="#000000" opacity="0.35"/>
+  <rect x="504" y="32" width="402" height="496" rx="6" fill="#F0F0F0" stroke="#A8A8A8"/>
+  <rect x="504" y="32" width="402" height="30" fill="#F5F5F5"/>
+  <line x1="504" y1="62" x2="906" y2="62" stroke="#D2D2D2"/>
+  <text x="518" y="52" fill="#1A1A1A" font-family="'Segoe UI', Tahoma, sans-serif" font-size="10.5">Add device</text>
+
+  <text x="520" y="88" fill="#3B3B3B" font-family="'Segoe UI', Tahoma, sans-serif" font-size="9.5" font-weight="600">Network adapter</text>
+  <rect x="520" y="96" width="256" height="24" rx="3" fill="#FFFFFF" stroke="#8A8A8A"/>
+  <text x="530" y="112" fill="#1A1A1A" font-family="'Segoe UI', Tahoma, sans-serif" font-size="9.5">Ethernet — Intel(R) I219-LM</text>
+  <rect x="760" y="96" width="16" height="24" fill="#E4E4E4"/>
+  <path d="M764 106 l4 4 l4 -4" fill="none" stroke="#404040" stroke-width="1.2"/>
+
+  <!-- expanded drop-down -->
+  <rect x="518" y="122" width="260" height="86" fill="#FFFFFF" stroke="#8A8A8A"/>
+  <rect x="519" y="123" width="258" height="20" fill="#E5EFFA"/>
+  <text x="530" y="137" fill="#1A1A1A" font-family="'Segoe UI', Tahoma, sans-serif" font-size="9.5">Ethernet — Intel(R) I219-LM</text>
+  <line x1="518" y1="143" x2="778" y2="143" stroke="#EDEDED"/>
+  <g font-family="'Segoe UI', Tahoma, sans-serif" font-size="9.5" fill="#1A1A1A">
+    <text x="530" y="160">Wi-Fi — Intel(R) AX211</text>
+    <text x="530" y="179">Ethernet 2 — USB-to-Ethernet</text>
+    <text x="530" y="198">COM3 — FTDI USB-RS485</text>
+  </g>
+  <rect x="700" y="152" width="70" height="46" rx="3" fill="#FDECEA"/>
+  <text x="735" y="166" text-anchor="middle" fill="#B32218" font-family="'Segoe UI', Tahoma, sans-serif" font-size="8.5" font-weight="600">never the</text>
+  <text x="735" y="178" text-anchor="middle" fill="#B32218" font-family="'Segoe UI', Tahoma, sans-serif" font-size="8.5">office Wi-Fi</text>
+  <text x="735" y="192" text-anchor="middle" fill="#B32218" font-family="'Segoe UI', Tahoma, sans-serif" font-size="8.5">or a VPN NIC</text>
+
+  <text x="520" y="232" fill="#3B3B3B" font-family="'Segoe UI', Tahoma, sans-serif" font-size="9.5" font-weight="600">BACnet/Ethernet</text>
+  <rect x="520" y="240" width="180" height="24" rx="3" fill="#FFFFFF" stroke="#B0B0B0" stroke-dasharray="3 3"/>
+  <text x="530" y="256" fill="#A0A0A0" font-family="'Segoe UI', Tahoma, sans-serif" font-size="9.5">interface not added yet</text>
+  <rect x="710" y="240" width="66" height="24" rx="3" fill="#FFFFFF" stroke="#0067C0"/>
+  <text x="743" y="256" text-anchor="middle" fill="#0067C0" font-family="'Segoe UI', Tahoma, sans-serif" font-size="9.5">Add</text>
+
+  <text x="520" y="292" fill="#3B3B3B" font-family="'Segoe UI', Tahoma, sans-serif" font-size="9.5" font-weight="600">UDP port</text>
+  <rect x="520" y="300" width="90" height="24" rx="3" fill="#FFFFFF" stroke="#0067C0" stroke-width="1.5"/>
+  <text x="530" y="316" fill="#1A1A1A" font-family="Consolas, monospace" font-size="10">47808</text>
+  <text x="620" y="316" fill="#767676" font-family="'Segoe UI', Tahoma, sans-serif" font-size="9">0xBAC0 — leave it unless the site says otherwise</text>
+
+  <rect x="520" y="336" width="256" height="20" rx="3" fill="#FFFFFF" stroke="#8A8A8A"/>
+  <rect x="522" y="338" width="14" height="14" rx="2" fill="#FFFFFF" stroke="#8A8A8A"/>
+  <text x="544" y="350" fill="#1A1A1A" font-family="'Segoe UI', Tahoma, sans-serif" font-size="9">Exclusive use of port 0xBAC0</text>
+
+  <rect x="520" y="370" width="370" height="66" rx="4" fill="#FFF8E1" stroke="#E0BE62"/>
+  <text x="532" y="390" fill="#7A5B00" font-family="'Segoe UI', Tahoma, sans-serif" font-size="9.5" font-weight="600">Npcap / WinPcap must be installed first</text>
+  <text x="532" y="406" fill="#7A5B00" font-family="'Segoe UI', Tahoma, sans-serif" font-size="9.5">Ethernet and Wi-Fi adapters go through a packet driver. Without it</text>
+  <text x="532" y="420" fill="#7A5B00" font-family="'Segoe UI', Tahoma, sans-serif" font-size="9.5">the adapter list is empty and Add does nothing.</text>
+
+  <rect x="520" y="448" width="370" height="52" rx="4" fill="#F0F8F4" stroke="#00b894"/>
+  <text x="532" y="468" fill="#00795C" font-family="'Segoe UI', Tahoma, sans-serif" font-size="9.5" font-weight="600">Read-only rule</text>
+  <text x="532" y="484" fill="#20604F" font-family="'Segoe UI', Tahoma, sans-serif" font-size="9.5">Read properties only. Never use Write, ReinitializeDevice,</text>
+  <text x="532" y="496" fill="#20604F" font-family="'Segoe UI', Tahoma, sans-serif" font-size="9.5">DeviceCommunicationControl or Backup/Restore.</text>
+
+  <!-- buttons -->
+  <rect x="716" y="506" width="76" height="0" fill="none"/>
+  <rect x="716" y="502" width="76" height="24" rx="3" fill="#FFFFFF" stroke="#8A8A8A"/>
+  <text x="754" y="518" text-anchor="middle" fill="#1A1A1A" font-family="'Segoe UI', Tahoma, sans-serif" font-size="9.5">Cancel</text>
+  <rect x="800" y="502" width="90" height="24" rx="3" fill="#FFFFFF" stroke="#8A8A8A"/>
+  <text x="845" y="518" text-anchor="middle" fill="#1A1A1A" font-family="'Segoe UI', Tahoma, sans-serif" font-size="9.5">Close</text>
+
+  <!-- ══ step badges ══ -->
+  <g font-family="'Segoe UI', Tahoma, sans-serif" font-size="11" font-weight="700" text-anchor="middle">
+    <circle cx="36" cy="103" r="11" fill="#00e696"/><text x="36" y="107" fill="#04140F">1</text>
+    <circle cx="496" cy="108" r="11" fill="#00e696"/><text x="496" y="112" fill="#04140F">2</text>
+    <circle cx="496" cy="312" r="11" fill="#00e696"/><text x="496" y="316" fill="#04140F">3</text>
+    <circle cx="784" cy="252" r="11" fill="#00e696"/><text x="784" y="256" fill="#04140F">4</text>
+  </g>
+
+  <text x="20" y="552" fill="#5C6763" font-family="'Segoe UI', Tahoma, sans-serif" font-size="10">示意图 (schematic) — YABE layout redrawn for teaching; menu and field names follow the real application.</text>
+</svg>
