@@ -49,25 +49,451 @@ document.addEventListener('DOMContentLoaded', () => {
     // BMS Detailed Guides Data
     const bmsData = {
         honeywell: {
-            title: "Honeywell EBI Export Guide",
-            steps: [
-                "Open Station and navigate to the 'Reports' or 'Trend' display.",
-                "Select 'Trend Export' from the configuration menu.",
-                "Choose the required points (Chiller, Pumps, etc.).",
-                "Set the export interval to 5 or 15 minutes.",
-                "Select 'CSV' as the output format and UTF-8 encoding.",
-                "Save the file with building name and current date."
+            title: "Honeywell EBI — Point List &amp; Trend Export",
+            wide: true,
+            footer: "Send the device sheet + point list to data@retragreen.com · Questions: support@retragreen.com",
+            blocks: [
+                {
+                    type: 'lead',
+                    text: "Written for the site BMS engineer. Honeywell splits this across two products, and the difference decides your route: on a <strong>local EBI R600 workstation</strong> the point list comes from the All Points Report and Excel data exchange; on the <strong>EBI 2025 / EBI One cloud portal</strong> (Supervisor Portal) you get a real <code>.CSV</code> export directly."
+                },
+                {
+                    type: 'note',
+                    title: 'Which EBI do you have?',
+                    text: "There is no public <em>EBI operator manual</em> — the step names below come from Honeywell&rsquo;s official EBI R600 Guide Specification and the Supervisor Portal User Guide. If your screens do not match, send us a picture of your menu rather than guessing. Note also that <strong>EBI 700 / 800</strong> are not current product names — the current releases are EBI 2025 and EBI One."
+                },
+                {
+                    type: 'note',
+                    title: 'Two different exports — send the right one',
+                    text: "<strong>Point list / point structure</strong> = which points exist, their type, unit and description. <strong>Trend data</strong> = the values over time. A trend file cannot replace the point list — it has no object identifiers, so the series cannot be tied back to equipment."
+                },
+                {
+                    type: 'section',
+                    title: '1 · What we need you to send',
+                    blocks: [
+                        {
+                            type: 'table',
+                            columns: ['Deliverable', 'Content', 'Why we need it'],
+                            rows: [
+                                ['<strong>A · Device &amp; network sheet</strong>', 'One row per BACnet device — identity and addressing (1.1)', 'Tells us who to talk to, and whether the points are reachable from outside the BMS'],
+                                ['<strong>B · Point list / point mapping</strong>', 'One row per point — name, type, address, unit, read/write, purpose (1.2)', 'The mapping our data platform uses to name, unit and validate every series']
+                            ]
+                        },
+                        {
+                            type: 'section',
+                            title: '1.1 · Device &amp; network sheet — one row per device',
+                            blocks: [
+                                {
+                                    type: 'table',
+                                    columns: ['Field', 'Where it comes from in EBI', 'Example'],
+                                    rows: [
+                                        ['Site name', 'EBI site / building record', 'HQ — Tower A'],
+                                        ['Vendor ID and vendor name', 'EBI&rsquo;s own BACnet identity is fixed in the R600 PICS: Vendor ID <strong>17</strong> / Honeywell International, Inc.', '17 / Honeywell International'],
+                                        ['Product model', 'EBI R600 BACnet PICS &rarr; Product Model Number', 'R600'],
+                                        ['Firmware revision', 'EBI R600 BACnet PICS &rarr; Firmware Revision', 'R600.1'],
+                                        ['Application software version', 'EBI R600 BACnet PICS &rarr; Application Software Version', '1015.202.x'],
+                                        ['BACnet protocol revision', 'EBI R600 BACnet PICS &rarr; BACnet Protocol Revision', '1.15'],
+                                        ['BACnet device profile', 'EBI R600 PICS — B-OWS and BACnet Advanced Operator Workstation (B-AWS)', 'B-AWS'],
+                                        ['Per-device IP, serial, baud, parity', 'Database Configuration Tool &rarr; communications parameters for that device', '10.20.30.40 / 9600 / none / 8-1-1'],
+                                        ['Device instance, network number, UDP port, per-site BBMD', '<em>Not shown in the EBI operator interface</em>', 'Take these from the controllers themselves or from BACnet discovery tooling — do not guess them'],
+                                        ['Number of points in scope', 'Row count of the point export (section 2)', '1,876']
+                                    ]
+                                },
+                                {
+                                    type: 'note',
+                                    text: "EBI is itself a BACnet Advanced Operator Workstation: the R600 PICS lists the object types it can view and modify (Analog / Binary / Multistate Input, Output and Value, Device, Schedule, Trend Log and more). A point discovered on the EBI BACnet AWS is therefore exposed. A useful cross-check: the PICS states that <em>&ldquo;this product cannot be used to modify BACnet objects on sites requiring UL Classification&rdquo;</em> — if we ever need write-back on a UL-classified site, that has to be agreed in advance."
+                                }
+                            ]
+                        },
+                        {
+                            type: 'section',
+                            title: '1.2 · Point list columns — one row per point',
+                            blocks: [
+                                {
+                                    type: 'table',
+                                    columns: ['Column', 'Meaning', 'Where it comes from in EBI', 'Priority'],
+                                    rows: [
+                                        ['Tag (our name)', 'The name we will use in the data platform', 'You assign it', 'Required'],
+                                        ['Point name', 'Point name in the EBI database', 'All Points Report &rarr; point name', 'Required'],
+                                        ['Description', 'What the point measures or controls', 'All Points Report &rarr; description', 'Required'],
+                                        ['Point type', 'Analogue, binary, multistate…', 'All Points Report &rarr; point type', 'Required'],
+                                        ['Engineering units', 'Engineering units of the point', 'All Points Report &rarr; engineering units', 'Required'],
+                                        ['Current value', 'Liveness check at the time of the report', 'All Points Report &rarr; current value', 'Required'],
+                                        ['Location hierarchy', 'Where the point sits in the building hierarchy', 'Point record / report grouping', 'Required'],
+                                        ['BACnet object type and instance', 'How the point is addressed over BACnet', '<em>Not in the EBI point export</em> — from BACnet discovery tooling', 'Required for BACnet'],
+                                        ['Read / Write', 'Whether we may only read, or are also allowed to command', 'Point properties / your policy', 'Required'],
+                                        ['Out-of-service / alarm-suppressed / manual flags', 'Points that exist but cannot be trusted as-is', 'Point Attribute Report (section 5)', 'Recommended'],
+                                        ['Free-format fields', 'Cabinet and wire numbers, engineering notes', 'Database Configuration Tool free-format fields', 'Recommended'],
+                                        ['Historization configured?', 'Whether the point has history collection at all', 'Point definition &rarr; historical collection is per-point and opt-in', 'Recommended']
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    type: 'section',
+                    title: '2 · Method A — Local EBI R600: the point list',
+                    blocks: [
+                        {
+                            type: 'note',
+                            text: "There is no single &ldquo;export point list&rdquo; button in the EBI operator interface. Honeywell&rsquo;s spec describes two official routes below — run the All Points Report, then use the Database Configuration Tool for the Excel version. You need roughly <strong>security Level 4</strong> or above."
+                        },
+                        {
+                            type: 'steps',
+                            items: [
+                                "Sign on at the required privilege level. On EBI R600 that is <strong>Level 4 or higher</strong> — Level 4 is what adds report building and access to the standard configuration displays.",
+                                "Run the pre-configured <strong>All Points Report</strong> from the report facility. Per the R600 specification it produces a list of point information including point name, description, point type, engineering units and current values.",
+                                "Set the filters — point name or wildcard, filter information, and the time interval for the search — plus the destination.",
+                                "Choose the destination: printer, operator interface, or internal file. The report output formats are <strong>HTML, Microsoft Word or RTF</strong> — <em>not</em> CSV on this route.",
+                                "If you need a real spreadsheet, launch the <strong>Database Configuration Tool</strong> from the operator workstation. The specification confirms it can <strong>export information to and import information from Microsoft Excel</strong> — this is the only officially confirmed Excel point-record export on R600.",
+                                "In the Database Configuration Tool, select the points or object groups you need and use the bulk copy/paste to Excel, together with its database management reports."
+                            ]
+                        },
+                        {
+                            type: 'note',
+                            title: 'What the point export does not contain',
+                            text: "The report column set has no BACnet object type or instance, device instance, vendor ID, network number or UDP port, and no flag for &ldquo;is this point BACnet exposed&rdquo;. Those come from section 1.1. EBI also supports bulk Excel data exchange at system level, including periodic or snapshot retrieval and retrieval of tag names and descriptions — useful if your site already has an Excel-based exchange running."
+                        }
+                    ]
+                },
+                {
+                    type: 'section',
+                    title: '3 · Method B — EBI 2025 / EBI One cloud portal: point list and CSV',
+                    blocks: [
+                        {
+                            type: 'note',
+                            text: "The cloud portal (Supervisor Portal / Remote Building Manager, hosted on the Honeywell Forge Cloud Platform) is a <strong>different product</strong> from the local workstation and needs its own site subscription. It is the one place where a genuine <code>.CSV</code> trend export is officially documented."
+                        },
+                        {
+                            type: 'steps',
+                            items: [
+                                "Open the site and go to the Equipment / Device Detail Dashboard. Use the <strong>Point View / Point List</strong> for the point list.",
+                                "For history: open the <strong>Trends</strong> tab, pick the date, and switch between <strong>Daily / Hourly / Minute</strong> views. Select the points through trend settings — up to 10 points per trend (max 6 analogue, 4 digital, 4 Y-axes), so export in batches for larger scopes.",
+                                "Click the <strong>export icon</strong>. The Supervisor Portal user guide states the trend data can be exported to <strong>.CSV</strong> format.",
+                                "For scheduled delivery use <strong>Reports</strong>: Reports icon &rarr; <strong>CREATE NEW REPORT</strong> &rarr; Report Name &rarr; Site(s) &rarr; Report Type &rarr; <strong>SAVE AND CONTINUE</strong> &rarr; choose the date range &rarr; choose the format (<strong>PDF, CSV or XLSX</strong>) &rarr; set Data Customization &rarr; <strong>SAVE AND CONTINUE</strong>.",
+                                "Set the delivery schedule to send to registered email addresses, at portfolio or site scope."
+                            ]
+                        },
+                        {
+                            type: 'note',
+                            title: 'Gateway topology shapes what you will see',
+                            text: "Plant controllers, unitary controllers, hubs and meters connect to the gateway over <strong>BACnet and Modbus</strong>, so the cloud point list is a subset of the EBI database. Two consequences: an unmodelled controller or unassigned point makes its alarms default to the gateway and land under the wrong site; and the current release does <strong>not</strong> support Active Alarms and over-ridden points in the Points tab view for the Honeywell Forge Gateway. Check the <strong>TOTAL / OFFLINE / ACTIVE HIGH ALARM</strong> counters and the gateway Online/Offline status before trusting an export."
+                        }
+                    ]
+                },
+                {
+                    type: 'section',
+                    title: '4 · Historical trend data on the local R600',
+                    blocks: [
+                        {
+                            type: 'bullets',
+                            items: [
+                                "History collection is <strong>per-point and opt-in</strong> — a point can exist with no historization configured, and therefore have no trend data at all.",
+                                "The specification provides snapshots and averages at <strong>intervals from 1 second to 24 hours</strong>.",
+                                "Collection can be edited <strong>on-line without loss</strong> of previously collected data; historization is not interrupted by configuration changes.",
+                                "The history engine supports <strong>three separately managed collections of up to 100,000 point values each</strong> and archives to local or remote disk, preserving data <strong>more than 10 years</strong> given appropriate storage.",
+                                "Trending allows up to <strong>32 points per trend window</strong>, with up to 1,000 pre-built trend displays (optionally extended to 30,000).",
+                                "For a spreadsheet on the R600, the specification explicitly supports <strong>copying the currently displayed trend data to the clipboard</strong> for pasting into a spreadsheet or document. Reports themselves output HTML, Word or RTF."
+                            ]
+                        },
+                        {
+                            type: 'note',
+                            text: "Honeywell does not publish a maximum export file size, row limit, or per-report retention window for EBI. If we need a very long history, agree the extraction approach with your Honeywell integrator first."
+                        }
+                    ]
+                },
+                {
+                    type: 'section',
+                    title: '5 · Checks before you send it',
+                    blocks: [
+                        {
+                            type: 'checklist',
+                            items: [
+                                "You are signed on at <strong>security Level 4 or higher</strong> — below that you cannot build reports.",
+                                "Run the <strong>Point Attribute Report</strong> as well: it filters on out-of-service, alarm-suppressed, abnormal input levels and points in manual mode. That report is the fastest way to find the points we cannot trust.",
+                                "BACnet object type and instance obtained separately — the EBI point export does not carry them.",
+                                "Device instance, network number, UDP port and BBMD status taken from the controllers or from BACnet discovery tooling, not guessed.",
+                                "Every point has a description and a unit, and the historization status is stated per point.",
+                                "Cloud export: the gateway is online and the OFFLINE counter is zero, and unmodelled controllers have been assigned to the correct site.",
+                                "Write-back is not assumed. If we need it, the UL Classification restriction in the EBI PICS has been cleared with the site first."
+                            ]
+                        }
+                    ]
+                },
+                {
+                    type: 'section',
+                    title: '6 · Troubleshooting',
+                    blocks: [
+                        {
+                            type: 'table',
+                            columns: ['Symptom', 'Likely cause', 'Fix'],
+                            rows: [
+                                ['No report option available', 'Signed on below security Level 4', 'Sign on at Level 4 or above; Level 3 only adds point control'],
+                                ['The point export is not a CSV', 'All Points Report outputs HTML, Word or RTF only', 'Use the Database Configuration Tool for the Excel export, or the cloud portal for a real .CSV'],
+                                ['A point has no trend data', 'Historization is opt-in and was never configured for that point', 'Confirm the point definition includes historical collection before requesting history'],
+                                ['Points appear under the gateway instead of the site', 'Controller or points unmodelled / unassigned to a site', 'Assign the controller to its site; unmodelled alarms otherwise default to the gateway'],
+                                ['Over-ridden points or active alarms missing in the Points tab', 'Not supported in the current release for the Honeywell Forge Gateway', 'Use the R600 local system or an alarm report rather than the Points tab view'],
+                                ['Device instance, network number or UDP port not in EBI', 'Not exposed in the EBI operator interface', 'Read them from the controllers or from BACnet discovery tooling'],
+                                ['Database Configuration Tool will not open the data', 'Insufficient security access for the database configuration tool', 'Sign on with a user holding sufficient security access'],
+                                ['Trend window only shows part of the scope', '32 points per trend window on the R600', 'Split into several trend windows or use the database management reports'],
+                                ['Long history requested but data is missing', 'No documented export size limit, but storage and archiving are site-specific', 'Agree the extraction approach with your Honeywell integrator before promising a range']
+                            ]
+                        }
+                    ]
+                },
+                {
+                    type: 'section',
+                    title: '7 · Official Honeywell references',
+                    blocks: [
+                        {
+                            type: 'refs',
+                            items: [
+                                { label: 'EBI R600 Guide Specification v3 (April 2020) — reporting, All Points Report, history management, trending, database configuration tool, security levels', url: 'https://buildings.honeywell.com/content/dam/hbtbt/en/documents/downloads/IS_Guide%20Spec_EBI%20R600_04.20%20V2.pdf' },
+                                { label: 'Honeywell Forge for Buildings Supervisor Portal (EBI) User Guide, 31-00864-5 Rev 5 (21-Nov-2025) — point list, trend .CSV export, reports, device status', url: 'https://prod-edam.honeywell.com/content/dam/honeywell-edam/hbt/en-us/documents/manuals-and-guides/user-manuals/hon-ba-hbs-honeywell-forge-for-buildings-supervisor-portal-user-guide-ebi-31-00864-5.pdf' },
+                                { label: 'Honeywell EBI BACnet PICS (March 2020) — Vendor ID 17, model, firmware, protocol revision, B-OWS / B-AWS profiles, object types, networking options', url: 'https://www.bacnetinternational.net/catalog/manu/honeywell%20international/EBI_PICS_R600.pdf' },
+                                { label: 'EBI-600 / EBI 2025 product page', url: 'https://buildings.honeywell.com/us/en/solutions/optimization/ebi-600' },
+                                { label: 'EBI 2025 brochure — Windows 11 / Server 2022 / SQL Server 2022 platform, OPC UA point server', url: 'https://buildings.honeywell.com/content/dam/hbtbt/en/documents/downloads/hon-ba-hbs-integrated-operations-ebi-2025-brochure.pdf' },
+                                { label: 'EBI 2025 Open Systems Technical Resource Guide — supported open protocols (BACnet, Modbus, LonWorks, OPC, ONVIF)', url: 'https://buildings.honeywell.com/content/dam/hbtbt/en/documents/downloads/hon-ba-ebi-2025-open-systems-white-paper.pdf' },
+                                { label: 'EBI One &ndash; Powered by Forge Cognition', url: 'https://buildings.honeywell.com/us/en/solutions/integrated-operations/ebi-one-powered-by-forge-cognition' },
+                                { label: 'EBI One overview brochure', url: 'https://buildings.honeywell.com/content/dam/hbtbt/en/documents/downloads/hon-ba-ebi-one-overview-brochure.pdf' },
+                                { label: 'EBI modernisation guide — EBI One vs existing EBI environments', url: 'https://buildings.honeywell.com/content/dam/hbtbt/en/documents/downloads/hon-ba-enterprise-buildings-integrator-cognition-modernization-guide.pdf' }
+                            ]
+                        }
+                    ]
+                }
             ]
         },
         siemens: {
-            title: "Siemens Desigo CC Export Guide",
-            steps: [
-                "Navigate to the 'Information Manager' or 'Trend' application.",
-                "Locate the Data Loggers for the target equipment.",
-                "Select 'Export' from the context menu.",
-                "Choose 'CSV' format and ensure 'Long' timestamp format is selected.",
-                "Verify the date range covers the last 12-18 months.",
-                "Export and verify the column headers are clear."
+            title: "Siemens Desigo CC — Point List &amp; Trend Export",
+            wide: true,
+            footer: "Send the device sheet + point list to data@retragreen.com · Questions: support@retragreen.com",
+            blocks: [
+                {
+                    type: 'lead',
+                    text: "Written for the site BMS engineer. In Desigo CC both deliverables come out of the same reporting tool as an Excel workbook: the <strong>Objects report</strong> is the point list, the <strong>Trends report</strong> is the history. Steps below are verified against the current Desigo CC V9 online help."
+                },
+                {
+                    type: 'note',
+                    title: 'Screen names differ on older systems',
+                    text: "Verified against <strong>Desigo CC V9</strong>. On much older Desigo Insight V4.x or Desigo CC 6.x/7.x installations the same functions carry different names. If your system does not look like the screenshots, send us a picture of your menu and we will map it — do not guess the path."
+                },
+                {
+                    type: 'note',
+                    title: 'Two different exports — send the right one',
+                    text: "<strong>Objects report</strong> = which points exist, their type, unit and description. <strong>Trends report</strong> = the values over time. A trend workbook cannot replace the point list: it has no object identifiers, so the series cannot be tied back to equipment."
+                },
+                {
+                    type: 'section',
+                    title: '1 · What we need you to send',
+                    blocks: [
+                        {
+                            type: 'table',
+                            columns: ['Deliverable', 'Content', 'Why we need it'],
+                            rows: [
+                                ['<strong>A · Device &amp; network sheet</strong>', 'One row per BACnet device — identity and addressing (1.1)', 'Tells us who to talk to, and whether the points are reachable from outside the BMS'],
+                                ['<strong>B · Point list / point mapping</strong>', 'One row per point — name, type, instance, unit, read/write, purpose (1.2)', 'The mapping our data platform uses to name, unit and validate every series']
+                            ]
+                        },
+                        {
+                            type: 'section',
+                            title: '1.1 · Device &amp; network sheet — one row per device',
+                            blocks: [
+                                {
+                                    type: 'table',
+                                    columns: ['Field', 'Where to read it in Desigo CC', 'Example'],
+                                    rows: [
+                                        ['Site name', 'System Browser &gt; Site object name', 'HQ — Tower A'],
+                                        ['Management-station BACnet device instance', 'BACnet tab &gt; Settings expander &gt; Instance Number (factory default 9998)', '9998'],
+                                        ['Vendor IDs', 'Same Settings expander (defaults 0 and 600, add your own with Add)', '0, 600'],
+                                        ['Max APDU length', 'Same Settings expander (default 1476 bytes)', '1476'],
+                                        ['BACnet/IP address &amp; UDP port', 'BACnet tab &gt; BT BACnet Stack Config &gt; Gateway Port Table &gt; Port Properties', '10.20.30.40 / 47808'],
+                                        ['Network number', 'Same Port Properties', '1'],
+                                        ['BBMD or Foreign Device', 'Same expander — configure the physical port as BBMD or Foreign Device', 'BBMD'],
+                                        ['Field device instance / name / MAC', 'Device Info expander on the scanned device', 'Device, 12 / AHU-1 / 00:1B:19:…'],
+                                        ['Point-level BACnet identity', 'BACnet Object Browser &gt; Edit Object Property Reference: Device Instance, Object Type, Object Instance, Property ID', '12 / AI / 1201 / 85'],
+                                        ['Number of matched objects', 'Row count of the Objects report (section 2)', '2,140']
+                                    ]
+                                },
+                                {
+                                    type: 'note',
+                                    title: 'These fields need Engineering mode',
+                                    text: "The BACnet driver settings, the Device Info expander and the BACnet Object Browser are engineering-side functions: they need <strong>Engineering mode</strong> and the <strong>BACnet EDE extension module</strong> installed. Ask the engineer who maintains the system, not a day-to-day operator."
+                                }
+                            ]
+                        },
+                        {
+                            type: 'section',
+                            title: '1.2 · Point list columns — one row per point',
+                            blocks: [
+                                {
+                                    type: 'table',
+                                    columns: ['Column', 'Meaning', 'Where it comes from in Desigo CC', 'Priority'],
+                                    rows: [
+                                        ['Tag (our name)', 'The name we will use in the data platform', 'You assign it', 'Required'],
+                                        ['Object name', 'Name of the point in the system', 'Objects report &rarr; Name', 'Required'],
+                                        ['Object type', 'AI / AO / BI / BO / AV / MSV…', 'Objects report &rarr; Type', 'Required'],
+                                        ['Object instance', 'Instance part of the BACnet Object Identifier', 'BACnet Object Browser &rarr; Object Instance (engineering side)', 'Required for BACnet'],
+                                        ['Object reference', 'Desigo CC reference of the object', 'Objects report &rarr; reference column', 'Required'],
+                                        ['Property', 'Which property the value is taken from (Present Value, Status…)', 'Objects report property columns', 'Required'],
+                                        ['Unit', 'Engineering units (°C, kW, m³/h, %RH)', 'Objects report &rarr; Unit', 'Required'],
+                                        ['Read / Write', 'Whether we may only read, or are also allowed to command', 'Point properties / your policy', 'Required'],
+                                        ['Present value &amp; quality', 'Sanity check that the point is alive and trustworthy', 'Objects report &rarr; Value, Quality', 'Recommended'],
+                                        ['Discipline / Subdiscipline / Description', 'Grouping and the purpose of the point', 'Activities report columns', 'Recommended'],
+                                        ['Trend log?', 'Whether the point is trended, and the interval', 'Trend View Definition / Trends report', 'Recommended'],
+                                        ['Resolution, Min / Max', 'Engineering range of the point', 'Objects report property columns', 'Optional']
+                                    ]
+                                },
+                                {
+                                    type: 'note',
+                                    title: 'What the Objects report does not contain',
+                                    text: "No report column set carries the BACnet vendor ID, model, firmware, IP/UDP port, device instance, network number or MAC. Those exist only in the BACnet driver configuration under Engineering mode — capture them separately using section 1.1."
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    type: 'section',
+                    title: '2 · Method A — Objects report (the point list)',
+                    blocks: [
+                        {
+                            type: 'steps',
+                            items: [
+                                "Start <strong>System Manager</strong>. Running the report needs only the Show right; any BACnet work additionally needs <strong>Engineering mode</strong> (section 4).",
+                                "Open <strong>System Browser &gt; Reports</strong> and create a new Report Definition.",
+                                "On the <strong>Home</strong> tab, in the <strong>Insert</strong> group choose <strong>Table</strong> and select the <strong>Objects</strong> table — or right-click the definition and use <strong>Insert Table</strong>.",
+                                "Drag the source object from the System Browser into the definition, or set the table's <strong>Name filter</strong>. Wildcards work, e.g. <code>*CHW*</code>.",
+                                "Right-click the table &rarr; <strong>Select Columns</strong> and tick what you need. For an Objects table you must first pick the object type in the <strong>Type</strong> drop-down, and property columns only appear when their display levels are enabled under <strong>Models and Functions tab &gt; Properties</strong> expander.",
+                                "Click <strong>Run</strong>, then <strong>Create and view Excel</strong>. MS Excel 2007 or later must be installed on that PC, otherwise the button stays disabled. The workbook is staged in a local temp folder and you are then prompted to save a permanent copy.",
+                                "Repeat per system (water / air / electrical) and per site. Save as <code>SiteName_PointList_YYYYMMDD.xlsx</code>."
+                            ]
+                        },
+                        {
+                            type: 'note',
+                            title: 'Refreshing it automatically',
+                            text: "<strong>Settings</strong> tab &rarr; <strong>Report Output</strong> &rarr; Dialog Launcher &rarr; <strong>Report Output Definition</strong>: set Destination types = <strong>File</strong>, Report format = <strong>Excel</strong>, and choose a destination path. <strong>Create and view PDF</strong> is the print alternative; PDFs longer than 500 pages are split into two documents."
+                        }
+                    ]
+                },
+                {
+                    type: 'section',
+                    title: '3 · Method B — Trends report (historical data)',
+                    blocks: [
+                        {
+                            type: 'steps',
+                            items: [
+                                "In the same Reports area insert a <strong>Trends</strong> table, or drag a <strong>Trend View Definition</strong> onto the definition — that sets the Name filter for you.",
+                                "Choose the time range: absolute dates, relative to the current date, to a start/stop date, a predefined range, or the time-range scrollbar.",
+                                "For a fixed cadence use the interval-based Trends Report: it adds a <strong>Time Filter</strong> (range plus interval) and an optional <strong>Condition Filter</strong> on Value or Quality. The shipped template <code>HQ_TrendLog_15Min</code> is a good starting point.",
+                                "Click <strong>Run</strong> &rarr; <strong>Create and view excel</strong>, then save the workbook.",
+                                "Check the layout: one common <strong>Date Time</strong> column plus one column per series, each headed by the trended object (or custom text) with its unit and alias."
+                            ]
+                        },
+                        {
+                            type: 'note',
+                            title: 'Before you call a gap a data gap',
+                            tone: 'warn',
+                            text: "The Trends table reports per-point quality attributes — read them before assuming the logger is at fault: <strong>TrendLogEnabled (41)</strong> logging is switched off, <strong>TrendError (42)</strong> logging fault, <strong>TrendRollover (44)</strong> buffer wrapped, <strong>TrendLogInterrupted (46)</strong> the controller dropped the log, <strong>TrendPurge (43)</strong> history purged. TrendTimeShift (40), TrendStartLogging (48) and TrendValueReduced (49) also change what you see."
+                        },
+                        {
+                            type: 'note',
+                            text: "Siemens does not publish a trend export size limit or a retention period for Desigo CC — get both confirmed in writing from your Siemens support contact for your licence."
+                        }
+                    ]
+                },
+                {
+                    type: 'section',
+                    title: '4 · Access and licence prerequisites',
+                    blocks: [
+                        {
+                            type: 'table',
+                            columns: ['Requirement', 'What it means for the export'],
+                            rows: [
+                                ['Application right <strong>Show</strong>', 'Minimum to run a report and read the result'],
+                                ['Application right <strong>Configure</strong>', 'Needed to create and save a report definition — without it Save / New / Delete / Edit are unavailable'],
+                                ['Application right <strong>Export</strong>', 'Granted separately from Show and Configure; without it the workbook cannot be produced'],
+                                ['<strong>Engineering mode</strong>', 'Hard prerequisite for all BACnet driver and BACnet Object Browser work'],
+                                ['<strong>BACnet EDE extension module</strong>', 'Must be installed before third-party BACnet devices can be integrated at all'],
+                                ['Excel 2007 or later', 'Installed locally on the workstation running the report'],
+                                ['Valid licence', 'Without one the server runs 30 minutes, then stops the project and forces a log-off; in Demo mode you cannot leave Engineering mode']
+                            ]
+                        },
+                        {
+                            type: 'note',
+                            text: "Application rights intersect with <strong>Scope</strong> rights: a user can hold Export and still not see the objects that matter to us. Check both when an export comes back suspiciously short."
+                        }
+                    ]
+                },
+                {
+                    type: 'section',
+                    title: '5 · Checks before you send it',
+                    blocks: [
+                        {
+                            type: 'checklist',
+                            items: [
+                                "The person exporting holds the <strong>Export</strong> application right, not just Show.",
+                                "Objects report: the Type drop-down was set <em>before</em> Select Columns — otherwise you silently get an empty or property-less table.",
+                                "Activities report: the <strong>AL</strong> attribute is selected on the object, or its property rows are silently omitted.",
+                                "Every point has a unit and a description. Desigo CC does not invent them, and a wrong unit silently ruins the analysis.",
+                                "BACnet object instance numbers captured from the BACnet Object Browser — the Objects report does not carry them.",
+                                "Network number identical on the management platform, the virtual port and the virtual BACnet network. A mismatch stops the stack configuration from saving.",
+                                "Field device instance numbers are populated — they stay blank until the configuration file is imported and a connection is established.",
+                                "BACnet drivers were saved with the physical network connected, otherwise the configuration imports but the driver never talks to the field.",
+                                "For every trended point the <strong>TrendLogEnabled</strong> quality bit is on."
+                            ]
+                        }
+                    ]
+                },
+                {
+                    type: 'section',
+                    title: '6 · Troubleshooting',
+                    blocks: [
+                        {
+                            type: 'table',
+                            columns: ['Symptom', 'Likely cause', 'Fix'],
+                            rows: [
+                                ['“Create and view Excel” is greyed out', 'Excel 2007 or later not installed on that workstation', 'Run the export from a PC with Excel installed'],
+                                ['Objects report has no property columns', 'Object type not chosen in the Type drop-down, or display levels not enabled', 'Set the type first, then enable the display levels under Models and Functions &gt; Properties'],
+                                ['Activities report is missing properties', 'The AL attribute is not selected on the object', 'Select AL on the object, then re-run the report'],
+                                ['Device instance stays blank', 'The configuration file has not been imported yet', 'Import the configuration; the remaining Device Info fields populate once a connection is established'],
+                                ['BACnet stack configuration will not save', 'Network number mismatch between platform, virtual port and virtual BACnet network', 'Make the three network numbers identical'],
+                                ['Some trend columns are empty', 'TrendLogEnabled, TrendError, TrendRollover, TrendLogInterrupted or TrendPurge is set', 'Read the Trends quality attributes for those points and fix logging on the controller'],
+                                ['The session ends mid-export', 'No valid licence — the 30-minute Demo mode cutoff', 'Export from a licensed server session'],
+                                ['A point is visible in Desigo CC but not to a third party', 'Engineering mode not enabled, BACnet EDE module missing, or the driver has no physical connection', 'Check all three — the driver needs a live network connection to publish anything'],
+                                ['The licence data point count suddenly jumps', 'An EDE import counts every imported room-device data point as a licence data point', 'Import only the points you actually need']
+                            ]
+                        }
+                    ]
+                },
+                {
+                    type: 'section',
+                    title: '7 · Official Siemens references',
+                    blocks: [
+                        {
+                            type: 'refs',
+                            items: [
+                                { label: 'Version Information — Desigo CC V9 and extension modules (30240157835)', url: 'https://mybuilding.siemens.com/d025938170736/help/engineeringhelp/en-us/30240157835.html' },
+                                { label: 'Insert Tables — Objects / Trends / Activities, Select Columns (23964905867)', url: 'https://mybuilding.siemens.com/d025938170736/help/engineeringhelp/en-us/23964905867.html' },
+                                { label: 'View a Report — Excel 2007+ prerequisite, temp staging, 500-page PDF split (23907511307)', url: 'https://mybuilding.siemens.com/d025938170736/help/engineeringhelp/en-us/23907511307.html' },
+                                { label: 'Overview of Reports — Objects report, trend columns, quality attributes (13035497995)', url: 'https://mybuilding.siemens.com/d025938170736/help/engineeringhelp/en-us/13035497995.html' },
+                                { label: 'Viewing Trend log Report data with Excel output (20077529739)', url: 'https://mybuilding.siemens.com/d025938170736/help/engineeringhelp/en-us/20077529739.html' },
+                                { label: 'Interval-based Trends Report — Time / Condition Filter (18163963147)', url: 'https://mybuilding.siemens.com/d025938170736/help/engineeringhelp/en-us/18163963147.html' },
+                                { label: 'Analyze the Trend Data — time range selection (23261571979)', url: 'https://mybuilding.siemens.com/d025938170736/help/engineeringhelp/en-us/23261571979.html' },
+                                { label: 'Configuring Basic Driver Settings — instance 9998, vendor IDs, APDU (22300262027)', url: 'https://mybuilding.siemens.com/d025938170736/help/engineeringhelp/en-us/22300262027.html' },
+                                { label: 'Configuring the BT BACnet Stack — port table, IP/UDP, BBMD (22300265867)', url: 'https://mybuilding.siemens.com/d025938170736/help/engineeringhelp/en-us/22300265867.html' },
+                                { label: 'Device Info — device instance, network number, MAC (22302734091)', url: 'https://mybuilding.siemens.com/d025938170736/help/engineeringhelp/en-us/22302734091.html' },
+                                { label: 'Configure Discovery Settings — network, instance and vendor filters (22415341195)', url: 'https://mybuilding.siemens.com/d025938170736/help/engineeringhelp/en-us/22415341195.html' },
+                                { label: 'BACnet Object Browser — Device Instance / Object Type / Object Instance / Property ID (13794732811)', url: 'https://mybuilding.siemens.com/d025938170736/help/engineeringhelp/en-us/13794732811.html' },
+                                { label: '3rd Party BACnet Integration — BACnet EDE module prerequisite (14124999691)', url: 'https://mybuilding.siemens.com/d025938170736/help/engineeringhelp/en-us/14124999691.html' },
+                                { label: 'Application Rights — Show / Configure / Export / Import / Execute (13997136139)', url: 'https://mybuilding.siemens.com/d025938170736/help/engineeringhelp/en-us/13997136139.html' },
+                                { label: 'License Modes — 30-minute Demo mode (13987774347)', url: 'https://mybuilding.siemens.com/d025938170736/help/engineeringhelp/en-us/13987774347.html' },
+                                { label: '3rd Party BACnet Troubleshooting (14128916619)', url: 'https://mybuilding.siemens.com/d025938170736/help/engineeringhelp/en-us/14128916619.html' },
+                                { label: 'Importing Siemens room devices with an EDE file — licence data points (22414103691)', url: 'https://mybuilding.siemens.com/d025938170736/help/engineeringhelp/en-us/22414103691.html' }
+                            ]
+                        }
+                    ]
+                }
             ]
         },
         jci: {
@@ -333,14 +759,219 @@ document.addEventListener('DOMContentLoaded', () => {
             ]
         },
         schneider: {
-            title: "Schneider EcoStruxure Export Guide",
-            steps: [
-                "Access the 'WebStation' or 'WorkStation'.",
-                "Navigate to 'Trend Logs' under the required controllers.",
-                "Use the 'Export Log' feature.",
-                "Select 'CSV' format and period: 'Last Year'.",
-                "Check 'UTF-8' for encoding options if available.",
-                "Validate data columns before final submission."
+            title: "Schneider EcoStruxure Building Operation — Point List &amp; Trend Export",
+            wide: true,
+            footer: "Send the device sheet + point list to data@retragreen.com · Questions: support@retragreen.com",
+            blocks: [
+                {
+                    type: 'lead',
+                    text: "Written for the site BMS engineer. In EcoStruxure Building Operation the point list comes from <strong>Search &rarr; Export to Excel</strong>, and history comes from the <strong>trend log list</strong> export. Steps below are verified against the EcoStruxure Building Operation 7.1 online help."
+                },
+                {
+                    type: 'note',
+                    title: 'Two different exports — send the right one',
+                    text: "<strong>Search export</strong> = which objects exist, their type, description and properties. <strong>Trend log export</strong> = the values over time. A trend file cannot replace the point list — it has no object identifiers, so the series cannot be tied back to equipment."
+                },
+                {
+                    type: 'note',
+                    title: 'The 1000-result limit is the usual reason a point list comes back short',
+                    tone: 'warn',
+                    text: "Search stops at <strong>1000 results</strong> unless the corresponding option is kept clear, and the option is not remembered between sessions. Split large buildings by folder, by equipment, or by object type — one export per AHU / chiller / plant — otherwise you will silently hand over a partial list."
+                },
+                {
+                    type: 'section',
+                    title: '1 · What we need you to send',
+                    blocks: [
+                        {
+                            type: 'table',
+                            columns: ['Deliverable', 'Content', 'Why we need it'],
+                            rows: [
+                                ['<strong>A · Device &amp; network sheet</strong>', 'One row per BACnet device — identity and addressing (1.1)', 'Tells us who to talk to, and whether the points are reachable from outside the BMS'],
+                                ['<strong>B · Point list / point mapping</strong>', 'One row per point — name, type, address, unit, read/write, purpose (1.2)', 'The mapping our data platform uses to name, unit and validate every series']
+                            ]
+                        },
+                        {
+                            type: 'section',
+                            title: '1.1 · Device &amp; network sheet — one row per device',
+                            blocks: [
+                                {
+                                    type: 'table',
+                                    columns: ['Field', 'Where to read it in EcoStruxure', 'Note'],
+                                    rows: [
+                                        ['Site name', 'System tree &gt; site node', '—'],
+                                        ['BACnet device identification number', 'Device Info Screen / Device Discovery Detail Screen &rarr; <strong>Object ID</strong>', 'Documented as the BACnet device identification number'],
+                                        ['Vendor ID and vendor', 'Same screens &rarr; <strong>Vendor ID</strong>, <strong>Vendor</strong>', '—'],
+                                        ['Model', 'Same screens &rarr; <strong>Model</strong>', '—'],
+                                        ['Firmware version', 'Same screens &rarr; <strong>Firmware version</strong>', '—'],
+                                        ['Serial number', 'Same screens &rarr; <strong>Serial number</strong>', 'Useful for matching the physical controller'],
+                                        ['IP address', 'Same screens &rarr; <strong>IP address</strong>', '—'],
+                                        ['UDP port, network number, protocol revision', '<em>Not shown in EcoStruxure Building Operation</em>', 'Take these from the device itself or from BACnet discovery tooling — do not guess them'],
+                                        ['Per-point BACnet address', 'Object &rarr; General Information &rarr; Basic tab &rarr; <strong>Foreign address</strong>', 'Documented as the address to a non-EcoStruxure product, e.g. a BACnet device; can be added as a search column'],
+                                        ['Number of objects in scope', 'Row count of the Search export (section 2)', '—']
+                                    ]
+                                },
+                                {
+                                    type: 'note',
+                                    text: "The Device Info and Device Discovery Detail screens are documented under the SpaceLogic Operator Display section rather than under WorkStation. If you cannot see them, run <strong>Actions &gt; Discover Devices</strong> from the device-discovery area and open the discovery detail for the device."
+                                }
+                            ]
+                        },
+                        {
+                            type: 'section',
+                            title: '1.2 · Point list columns — one row per point',
+                            blocks: [
+                                {
+                                    type: 'table',
+                                    columns: ['Column', 'Meaning', 'Availability in the search export', 'Priority'],
+                                    rows: [
+                                        ['Tag (our name)', 'The name we will use in the data platform', 'You assign it', 'Required'],
+                                        ['Name', 'Object name in the system', 'Add/Remove Columns &rarr; Name', 'Required'],
+                                        ['Path', 'Full location path of the object in the tree', 'Add/Remove Columns &rarr; Path', 'Required'],
+                                        ['Type', 'Object type (Analog Input, Analog Value…)', 'Add/Remove Columns &rarr; Type', 'Required'],
+                                        ['Description', 'What the point measures or controls', 'Add/Remove Columns &rarr; Description', 'Required'],
+                                        ['Foreign address', 'BACnet address of the point', 'Add/Remove Columns &rarr; Foreign address', 'Required for BACnet'],
+                                        ['Units', 'Engineering units', 'Tick <strong>Search for properties</strong> and add the unit property as a column', 'Required'],
+                                        ['Read / Write', 'Whether we may only read, or are also allowed to command', 'Object Properties access level; or your policy', 'Required'],
+                                        ['Value', 'Liveness check', 'Current value from the object, or Search for properties', 'Recommended'],
+                                        ['Executed by', 'Which server executes the object', 'Add/Remove Columns &rarr; Executed by', 'Recommended'],
+                                        ['Property binding / retain level', 'How the property is bound and retained', 'Add/Remove Columns &rarr; Property binding, Property retain level', 'Recommended'],
+                                        ['Note 1 / Note 2', 'Free-text notes sometimes used for engineering data', 'Add/Remove Columns &rarr; Note 1, Note 2', 'Optional'],
+                                        ['Validation', 'Any range validation on the object', 'Add/Remove Columns &rarr; Validation', 'Optional']
+                                    ]
+                                },
+                                {
+                                    type: 'note',
+                                    title: 'The export contains only the columns you added',
+                                    text: "Search &rarr; Export to Excel writes <strong>exactly the visible columns</strong>. Vendor ID, model, firmware, UDP port and network number are never in that workbook — collect them separately from section 1.1. The List View context menu also has an Export, but that is for <strong>individual objects in the native EcoStruxure format</strong>, not a point list."
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    type: 'section',
+                    title: '2 · Method A — Search &rarr; Export to Excel (the point list)',
+                    blocks: [
+                        {
+                            type: 'steps',
+                            items: [
+                                "WorkStation: use the <strong>Search</strong> entry on the WorkStation toolbar. WebStation: select the folder, server or device in the system tree and click the <strong>magnifier</strong>.",
+                                "On the <strong>General</strong> tab, type into the Search box. Wildcards work — <code>*</code> for any string and <code>?</code> for a single character, e.g. <code>*Temperature*</code>.",
+                                "Set <strong>In folder</strong> to the server or root, and use <strong>Additional search locations &gt; Add</strong> to cover other branches.",
+                                "Optionally tick <strong>Search for properties</strong> (needed to surface unit and value as columns) and <strong>Include subservers</strong>, then set <strong>Include types</strong> (for example <code>Analog Input</code>, <code>Analog Value</code>) and <strong>Conditions</strong> to narrow the result.",
+                                "Keep <strong>Stop if more than 1000 results</strong> clear so you get the full set. If the result is genuinely large, narrow the search rather than truncating it.",
+                                "Click <strong>Search</strong> to populate the result list.",
+                                "Open <strong>Add/Remove Columns</strong> on the Search view and tick everything we need in section 1.2 — the export only carries what is visible here.",
+                                "Click <strong>Export to Excel</strong> on the Search list toolbar, then save. Repeat per equipment group so no single export hits the 1000-result ceiling."
+                            ]
+                        },
+                        {
+                            type: 'note',
+                            text: "Saved searches are created in WorkStation and are <strong>read-only in WebStation</strong> — prepare the search on the engineering client if you want to reuse it."
+                        }
+                    ]
+                },
+                {
+                    type: 'section',
+                    title: '3 · Method B — Trend log list export (historical data)',
+                    blocks: [
+                        {
+                            type: 'steps',
+                            items: [
+                                "<strong>WorkStation:</strong> in the system tree select the trend log list, then click <strong>Export to .CSV</strong> and choose the folder and file name.",
+                                "<strong>WebStation:</strong> select the trend log list and use the <strong>Export to Excel</strong> or <strong>Export to XML</strong> button on the trend log list toolbar.",
+                                "<strong>Multi trend log list:</strong> select it and choose <strong>Export to .XLSX</strong>; the toolbar also offers Export to .XML and Export to .CSV.",
+                                "Set the period with the day / week / month / year buttons or the period selector, and pick the time zone — <strong>local, server or UTC</strong>. This matters: a mismatch shifts every series.",
+                                "Open the file before sending it. Missing values appear as empty cells, and <code>NaN</code>, <code>INF</code> and <code>-INF</code> can appear in values — do not let them reach the analysis unnoticed."
+                            ]
+                        },
+                        {
+                            type: 'note',
+                            title: 'Trend storage is circular — old data is overwritten',
+                            tone: 'warn',
+                            text: "All EcoStruxure trend logs use <strong>circular storing</strong>: once the log is full, the oldest records are overwritten. Capacity depends on the configuration. An <strong>Extended Trend Log</strong> moves records to larger storage (typically an Enterprise Server or Central), triggered by a Smart log, a percentage threshold, a maximum interval, a trigger variable, or a forced transfer. Ask early if you need more than the local retention — the history may already be gone."
+                        },
+                        {
+                            type: 'note',
+                            title: 'Extended trend log constraints',
+                            text: "An extended trend log <strong>cannot log a variable</strong> itself, only one may be attached per trend log, and it must share the same unit as the trend log — a unit mismatch is a documented conflict. For BACnet and Xenta trend logs, the extended trend log must be created on the <strong>same server that hosts the device</strong>."
+                        },
+                        {
+                            type: 'note',
+                            title: 'Scheduled reports',
+                            text: "Notification Reports can be generated on a trigger as text, XLSX or PDF, and can include search results, properties and trend log records. Record caps are <strong>5,000</strong> on a field server and <strong>100,000,000</strong> on an Enterprise Server / Central. Reports can be scheduled for delivery to registered email addresses at portfolio or site scope — this is the route for a recurring handover rather than a manual export."
+                        }
+                    ]
+                },
+                {
+                    type: 'section',
+                    title: '4 · Checks before you send it',
+                    blocks: [
+                        {
+                            type: 'checklist',
+                            items: [
+                                "Every export stayed under the 1000-result ceiling, or was deliberately split by equipment.",
+                                "<strong>Search for properties</strong> was ticked where unit and value columns were needed — otherwise those columns simply do not exist.",
+                                "<strong>Foreign address</strong> is in the column list. Without it there is no way to address the point over BACnet.",
+                                "Time zone stated with the trend export, and the file checked for empty cells, <code>NaN</code>, <code>INF</code> and <code>-INF</code>.",
+                                "Local trend retention is long enough for the period requested — remember the logs are circular.",
+                                "Every point has a description and a unit. EcoStruxure installations frequently leave both blank, and we cannot derive them.",
+                                "Report paths that will be scheduled use <strong>absolute</strong> paths — relative paths break when objects are moved or renamed."
+                            ]
+                        }
+                    ]
+                },
+                {
+                    type: 'section',
+                    title: '5 · Troubleshooting',
+                    blocks: [
+                        {
+                            type: 'table',
+                            columns: ['Symptom', 'Likely cause', 'Fix'],
+                            rows: [
+                                ['Search returns exactly 1000 objects', 'Stop if more than 1000 results is set, or the result is simply larger than the cap', 'Clear the option, or narrow the search by folder / equipment / object type and export in several files'],
+                                ['Unit or value column missing from the export', 'Search for properties was not ticked', 'Tick Search for properties, then add the property as a column in Add/Remove Columns'],
+                                ['No BACnet address on a point', 'Foreign address is not populated for that object', 'Read it from the object&rsquo;s General Information &gt; Basic tab; if it is empty, the point is not exposed to BACnet'],
+                                ['A point has no history', 'The point is not on any trend log', 'Only points on a trend log appear in a trend log list — confirm the point is logged before requesting history'],
+                                ['Old data missing from the export', 'Circular trend log overwrote the oldest records', 'Request earlier data before it is lost, and set up an extended trend log for retention'],
+                                ['Extended trend log never transfers', 'Unit mismatch with the trend log, or it was created on a different server than the device', 'Match the unit exactly; for BACnet / Xenta create it on the server hosting the device'],
+                                ['A gap in the data that looks wrong', 'Interval trend log with a delta — nothing is recorded while the value is inside the delta', 'Review the delta setting, or export the raw point values instead'],
+                                ['Saved search is read-only', 'Saved searches are created in WorkStation', 'Prepare and save the search in WorkStation; it can only be read in WebStation'],
+                                ['Scheduled report finds no data after a refit', 'The report used relative paths and objects were moved or renamed', 'Rebuild the report with absolute paths']
+                            ]
+                        }
+                    ]
+                },
+                {
+                    type: 'section',
+                    title: '6 · Official Schneider Electric references',
+                    blocks: [
+                        {
+                            type: 'refs',
+                            items: [
+                                { label: 'Searching for Objects or Properties — full search sequence and the 1000-result option (id 6897)', url: 'https://ecostruxure-building-help.se.com/bms/topics/show.castle?id=6897&locale=en-US&productversion=7.1' },
+                                { label: 'Search View — General tab options (id 6891)', url: 'https://ecostruxure-building-help.se.com/bms/topics/show.castle?id=6891&locale=en-US&productversion=7.1' },
+                                { label: 'Add/Remove Columns Dialog Box (Search) — the exportable column list (id 9754)', url: 'https://ecostruxure-building-help.se.com/bms/topics/show.castle?id=9754&locale=en-US&productversion=7.1' },
+                                { label: 'Search List Toolbar — Export to Excel, WorkStation (id 14041)', url: 'https://ecostruxure-building-help.se.com/bms/topics/show.castle?id=14041&locale=en-US&productversion=7.1' },
+                                { label: 'Exporting a Search to Excel, WebStation (id 13513)', url: 'https://ecostruxure-building-help.se.com/bms/topics/show.castle?id=13513&locale=en-US&productversion=7.1' },
+                                { label: 'Exporting a Trend Log List to CSV Format (id 5535)', url: 'https://ecostruxure-building-help.se.com/bms/topics/show.castle?id=5535&locale=en-US&productversion=7.1' },
+                                { label: 'Multi Trend Log List Toolbar — XML / CSV / XLSX and period selector (id 11240)', url: 'https://ecostruxure-building-help.se.com/bms/topics/show.castle?id=11240&locale=en-US&productversion=7.1' },
+                                { label: 'Exporting a Multi Trend Log List to .XLSX — time zones, fill values, NaN/INF (id 11917)', url: 'https://ecostruxure-building-help.se.com/bms/topics/show.castle?id=11917&locale=en-US&productversion=7.1' },
+                                { label: 'Trends Handling — circular storage and log types (id 15063)', url: 'https://ecostruxure-building-help.se.com/bms/topics/show.castle?id=15063&locale=en-US&productversion=7.1' },
+                                { label: 'Extended Trend Logs — transfer criteria and constraints (id 5546)', url: 'https://ecostruxure-building-help.se.com/bms/topics/show.castle?id=5546&locale=en-US&productversion=7.1' },
+                                { label: 'Creating an Interval Trend Log — interval, UTC alignment, delta (id 5108)', url: 'https://ecostruxure-building-help.se.com/bms/topics/show.castle?id=5108&locale=en-US&productversion=7.1' },
+                                { label: 'Notification Reports — formats, record caps, absolute vs relative paths (id 10803)', url: 'https://ecostruxure-building-help.se.com/bms/topics/show.castle?id=10803&locale=en-US&productversion=7.1' },
+                                { label: 'General Information Properties &ndash; Basic Tab — Foreign address, Executed by (id 5637)', url: 'https://ecostruxure-building-help.se.com/bms/topics/show.castle?id=5637&locale=en-US&productversion=7.1' },
+                                { label: 'Device Info Screen — Object ID, Vendor ID, Model, Firmware, IP, Serial (id 14241)', url: 'https://ecostruxure-building-help.se.com/bms/topics/show.castle?id=14241&locale=en-US&productversion=7.1' },
+                                { label: 'Device Discovery Detail Screen — same device fields (id 14243)', url: 'https://ecostruxure-building-help.se.com/bms/topics/show.castle?id=14243&locale=en-US&productversion=7.1' },
+                                { label: 'Actions Menu — Discover Devices, device communication and diagnostics (id 8225)', url: 'https://ecostruxure-building-help.se.com/bms/topics/show.castle?id=8225&locale=en-US&productversion=7.1' },
+                                { label: 'Object Properties — access methods and read-only vs read/write (id 6432)', url: 'https://ecostruxure-building-help.se.com/bms/topics/show.castle?id=6432&locale=en-US&productversion=7.1' },
+                                { label: 'WebStation — client platforms and licensing model (id 8792)', url: 'https://ecostruxure-building-help.se.com/bms/topics/show.castle?id=8792&locale=en-US&productversion=7.1' },
+                                { label: 'Engineering Tools Overview — Text Reports, Spreadsheet, Import and Export (id 9699)', url: 'https://ecostruxure-building-help.se.com/bms/topics/show.castle?id=9699&locale=en-US&productversion=7.1' }
+                            ]
+                        }
+                    ]
+                }
             ]
         }
     };
