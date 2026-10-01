@@ -1,0 +1,92 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 560" width="920" height="560" role="img" aria-label="YABE object list export and which columns come from YABE versus the vendor point export">
+  <rect x="0" y="0" width="920" height="560" fill="#0A0C0B"/>
+
+  <rect x="14" y="36" width="892" height="496" rx="6" fill="#F0F0F0" stroke="#A8A8A8"/>
+  <rect x="14" y="36" width="892" height="28" fill="#F5F5F5"/>
+  <line x1="14" y1="64" x2="906" y2="64" stroke="#D2D2D2"/>
+  <text x="26" y="55" fill="#1A1A1A" font-family="'Segoe UI', Tahoma, sans-serif" font-size="10.5">Yet Another BACnet Explorer — object list, all properties read</text>
+  <path d="M868 53 h10" stroke="#5A5A5A"/><rect x="886" y="46" width="9" height="9" fill="none" stroke="#5A5A5A"/>
+
+  <rect x="14" y="64" width="892" height="24" fill="#F0F0F0"/>
+  <g font-family="'Segoe UI', Tahoma, sans-serif" font-size="9.5" fill="#1A1A1A">
+    <text x="28" y="80">File</text><text x="58" y="80">Functions</text><text x="118" y="80">BACnet</text>
+    <text x="168" y="80">Objects</text><text x="218" y="80">View</text><text x="254" y="80">Options</text><text x="302" y="80">Help</text>
+  </g>
+
+  <!-- ══ object table ══ -->
+  <rect x="24" y="96" width="872" height="222" fill="#FFFFFF" stroke="#C4C4C4"/>
+  <rect x="24" y="96" width="872" height="24" fill="#E4E4E4"/>
+  <g font-family="'Segoe UI', Tahoma, sans-serif" font-size="8.5" font-weight="600" fill="#303030">
+    <text x="32" y="112">DEVICE</text>
+    <text x="124" y="112">OBJECT TYPE</text>
+    <text x="252" y="112">INST</text>
+    <text x="302" y="112">OBJECT NAME</text>
+    <text x="500" y="112">PRESENT VALUE</text>
+    <text x="614" y="112">UNITS</text>
+    <text x="694" y="112">OUT OF SERVICE</text>
+    <text x="804" y="112">PROPS READ</text>
+  </g>
+  <g font-family="Consolas, 'Courier New', monospace" font-size="9.5" fill="#1A1A1A">
+    <text x="32" y="140">DEVICE:12</text><text x="124" y="140">DEVICE</text><text x="252" y="140">12</text><text x="302" y="140">NAE8500-01</text><text x="500" y="140" fill="#9AA5A0">—</text><text x="614" y="140" fill="#9AA5A0">—</text><text x="694" y="140">false</text><text x="804" y="140" fill="#9AA5A0">73</text>
+    <text x="32" y="164">DEVICE:12</text><text x="124" y="164">ANALOG_INPUT</text><text x="252" y="164">1</text><text x="302" y="164">Outdoor_DryBulb_Temp</text><text x="500" y="164">27.4</text><text x="614" y="164">degC</text><text x="694" y="164">false</text><text x="804" y="164" fill="#9AA5A0">36</text>
+    <text x="32" y="188">DEVICE:12</text><text x="124" y="188">ANALOG_INPUT</text><text x="252" y="188">2</text><text x="302" y="188">Supply_Air_Temp</text><text x="500" y="188">13.1</text><text x="614" y="188">degC</text><text x="694" y="188">false</text><text x="804" y="188" fill="#9AA5A0">36</text>
+    <text x="32" y="212">DEVICE:12</text><text x="124" y="212">BINARY_INPUT</text><text x="252" y="212">3</text><text x="302" y="212">Zone_Temp_High_Alarm</text><text x="500" y="212">0 inactive</text><text x="614" y="212" fill="#9AA5A0">—</text><text x="694" y="212">false</text><text x="804" y="212" fill="#9AA5A0">14</text>
+    <text x="32" y="236">DEVICE:71</text><text x="124" y="236">ANALOG_INPUT</text><text x="252" y="236">1</text><text x="302" y="236">Zone_Temp</text><text x="500" y="236">24.6</text><text x="614" y="236">degC</text><text x="694" y="236">false</text><text x="804" y="236" fill="#9AA5A0">36</text>
+    <text x="32" y="260">DEVICE:71</text><text x="124" y="260">ANALOG_OUTPUT</text><text x="252" y="260">2</text><text x="302" y="260">Fan_Speed_Command</text><text x="500" y="260">60</text><text x="614" y="260">percent</text><text x="694" y="260">false</text><text x="804" y="260" fill="#9AA5A0">22</text>
+    <text x="32" y="284">DEVICE:4</text><text x="124" y="284">ANALOG_INPUT</text><text x="252" y="284">5</text><text x="302" y="284">AHU_Return_Air_Temp</text><text x="500" y="284">25.8</text><text x="614" y="284">degC</text><text x="694" y="284">false</text><text x="804" y="284" fill="#9AA5A0">36</text>
+  </g>
+  <g stroke="#EFEFEF">
+    <line x1="24" y1="148" x2="896" y2="148"/><line x1="24" y1="172" x2="896" y2="172"/>
+    <line x1="24" y1="196" x2="896" y2="196"/><line x1="24" y1="220" x2="896" y2="220"/>
+    <line x1="24" y1="244" x2="896" y2="244"/><line x1="24" y1="268" x2="896" y2="268"/>
+  </g>
+  <rect x="24" y="290" width="872" height="24" fill="#F7F9FC"/>
+  <text x="32" y="306" fill="#3B5B8C" font-family="'Segoe UI', Tahoma, sans-serif" font-size="9">Every BACnet Object Identifier on the network is unique — <tspan font-weight="600">device + type + instance</tspan> is the real key, not the name.</text>
+
+  <!-- ══ mapping panel ══ -->
+  <rect x="24" y="330" width="530" height="182" rx="6" fill="#FFFFFF" stroke="#C4C4C4"/>
+  <text x="38" y="354" fill="#1A1A1A" font-family="'Segoe UI', Tahoma, sans-serif" font-size="11" font-weight="600">Where each column comes from</text>
+  <text x="40" y="380" fill="#606060" font-family="'Segoe UI', Tahoma, sans-serif" font-size="9" font-weight="600" letter-spacing="0.04em">COLUMN</text>
+  <text x="252" y="380" fill="#606060" font-family="'Segoe UI', Tahoma, sans-serif" font-size="9" font-weight="600" letter-spacing="0.04em">YABE SCAN</text>
+  <text x="336" y="380" fill="#606060" font-family="'Segoe UI', Tahoma, sans-serif" font-size="9" font-weight="600" letter-spacing="0.04em">VENDOR EXPORT</text>
+  <line x1="36" y1="388" x2="542" y2="388" stroke="#E4E4E4"/>
+
+  <g font-family="'Segoe UI', Tahoma, sans-serif" font-size="9.5" fill="#1A1A1A">
+    <text x="40" y="406">Object type + instance</text>
+    <text x="40" y="426">Present value (liveness)</text>
+    <text x="40" y="446">Engineering units</text>
+    <text x="40" y="466">Description</text>
+    <text x="40" y="486">Location hierarchy</text>
+    <text x="40" y="506">Read / write access</text>
+  </g>
+  <g font-family="'Segoe UI', Tahoma, sans-serif" font-size="9.5">
+    <text x="252" y="406" fill="#00795C">yes</text>
+    <text x="252" y="426" fill="#00795C">yes</text>
+    <text x="252" y="446" fill="#00795C">often</text>
+    <text x="252" y="466" fill="#00795C">sometimes</text>
+    <text x="252" y="486" fill="#B32218">no</text>
+    <text x="252" y="506" fill="#00795C">yes</text>
+    <text x="336" y="406" fill="#9AA5A0">—</text>
+    <text x="336" y="426" fill="#9AA5A0">optional</text>
+    <text x="336" y="446" fill="#00795C">usually</text>
+    <text x="336" y="466" fill="#00795C">usually</text>
+    <text x="336" y="486" fill="#00795C">required</text>
+    <text x="336" y="506" fill="#00795C">required</text>
+  </g>
+
+  <!-- ══ wrap-up panel ══ -->
+  <rect x="566" y="330" width="330" height="182" rx="6" fill="#0E1210" stroke="rgba(0,230,150,0.4)"/>
+  <text x="582" y="354" fill="#00e696" font-family="'Segoe UI', Tahoma, sans-serif" font-size="11" font-weight="600">Before you pack up</text>
+  <g font-family="'Segoe UI', Tahoma, sans-serif" font-size="9.5" fill="#C9D2CE">
+    <text x="582" y="380">1.  Screenshot or export every Device object</text>
+    <text x="582" y="400">2.  Export the object list — YABE object ids only</text>
+    <text x="582" y="420">3.  Send it with the vendor point export</text>
+    <text x="582" y="440">4.  Put the laptop IP back to Automatic (DHCP)</text>
+    <text x="582" y="460">5.  Re-enable Wi-Fi and VPN</text>
+    <text x="582" y="480">6.  Log the scan: date, operator, who approved</text>
+  </g>
+  <rect x="580" y="490" width="302" height="14" rx="3" fill="rgba(255,190,50,0.12)"/>
+  <text x="590" y="501" fill="#FFBe32" font-family="'Segoe UI', Tahoma, sans-serif" font-size="9">Leaving a static IP behind breaks the next person's VPN.</text>
+
+  <text x="20" y="552" fill="#5C6763" font-family="'Segoe UI', Tahoma, sans-serif" font-size="10">示意图 (schematic) — names, instances and values are worked examples; the column sources are the real behaviour.</text>
+</svg>

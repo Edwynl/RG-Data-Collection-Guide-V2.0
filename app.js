@@ -48,6 +48,448 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // BMS Detailed Guides Data
     const bmsData = {
+        networkscan: {
+            title: "Connect &amp; Scan — Set Your IP into the BMS Range, Then Scan with YABE",
+            wide: true,
+            footer: "Send the device sheet + object list to data@retragreen.com · Questions: support@retragreen.com",
+            blocks: [
+                {
+                    type: 'lead',
+                    text: "Written for the site engineer or IT contact who has to get a laptop onto the building network. This is <strong>vendor-neutral</strong> — it works for Honeywell, Siemens, Johnson Controls and Schneider alike, because every BACnet system answers the same discovery request on the same port. Do this <em>before</em> the vendor-specific guides: the point list you produce here is the part those exports cannot give you."
+                },
+                {
+                    type: 'note',
+                    tone: 'warn',
+                    title: 'Before you touch anything — five rules',
+                    text: "<strong>1.</strong> Get written permission from the BMS contractor or the site manager; touching a live building network without it is your liability. <strong>2.</strong> <em>Read only.</em> Never write to a BACnet object on a production site — one stray write to an Analog Output can start a chiller. <strong>3.</strong> Never unplug a network cable you did not plug in. <strong>4.</strong> Switch off Wi-Fi, VPN and any second Ethernet adapter before you start; three of them will silently break discovery. <strong>5.</strong> Put the laptop IP back to Automatic (DHCP) before you hand it on."
+                },
+                {
+                    type: 'note',
+                    title: 'About the pictures',
+                    text: "The diagrams below are <strong>schematics redrawn for teaching</strong>, not screen captures — they are laid out for clarity and the spacing is simplified, but every field name, button label and menu path is the real one. Your Windows build and YABE version will differ in detail and in skin; if a label does not match, trust the field name, not the pixel position."
+                },
+
+                // ── 1 · what you need ────────────────────────────────────
+                {
+                    type: 'section',
+                    title: '1 · What you need before you start',
+                    blocks: [
+                        {
+                            type: 'table',
+                            columns: ['Item', 'Why', 'Notes'],
+                            rows: [
+                                ['Windows 10 or 11 laptop', 'The machine that joins the BMS network', 'Any laptop will do. A USB-to-Ethernet adapter is worth carrying — thin built-in ports are the most common reason a cable will not fit'],
+                                ['Cat5e/Cat6 patch cable', 'Physical link to the BMS switch or panel', 'Do <em>not</em> use a crossover cable — modern switches auto-negotiate, but a crossover on an unmanaged switch is a silent failure'],
+                                ['The BMS IP address list', 'Tells you the subnet, the range and which IPs are taken', 'Ask the BMS engineer. The quickest source is <code>ipconfig</code> on the BACnet workstation itself (section 2)'],
+                                ['An unused IP in that range', 'The address you will give your laptop', 'Never assume .250 is free — check the IP list first'],
+                                ['YABE (Yet Another BACnet Explorer)', 'The scanning tool — free, runs on Windows, reads BACnet/IP, MS/TP and PTP', 'Download in section 7'],
+                                ['USB-to-RS485 adapter', '<strong>Only if</strong> the trunk is BACnet MS/TP', 'FTDI or CH340 based, preferably galvanically isolated. YABE is tested with FTDI adapters'],
+                                ['A switch port on the BMS network', 'Where you plug in', 'An office wall socket is usually a separate VLAN and will not see the BACnet devices']
+                            ]
+                        },
+                        {
+                            type: 'note',
+                            title: 'Do I have BACnet/IP or MS/TP?',
+                            text: "This decides which half of the guide you use. <strong>BACnet/IP</strong> runs over Ethernet — every device has an IP address, and you configure your laptop the same way as the rest of this guide (sections 2&ndash;8). <strong>MS/TP</strong> (also called ARCNET, MSTP or RS-485) is a serial bus with no IP addresses at all — skip straight to section 9. Most modern sites are BACnet/IP, often with MS/TP devices hanging off a gateway."
+                        }
+                    ]
+                },
+
+                // ── 2 · plan the address ──────────────────────────────────
+                {
+                    type: 'section',
+                    title: '2 · Plan the address before you open Settings',
+                    blocks: [
+                        {
+                            type: 'figure',
+                            src: 'assets/bms-network/01-network-topology.svg',
+                            alt: 'Diagram: the laptop, an unmanaged switch and three BACnet devices all inside the BMS subnet 10.20.30.0/24, with a callout on what happens across a router or a VPN',
+                            caption: 'The whole principle in one picture — your laptop joins the same subnet as the devices, with <em>no</em> default gateway.'
+                        },
+                        {
+                            type: 'steps',
+                            items: [
+                                "<strong>Find the BMS range.</strong> The most reliable source is the BACnet workstation: open PowerShell on it and run <code>ipconfig</code>. The <code>IPv4 Address</code> and <code>Subnet Mask</code> of its Ethernet adapter give you the exact range and mask the BMS uses.",
+                                "<strong>List what is already taken.</strong> The same <code>ipconfig</code> gives you one address. For the full list, ask the engineer for the BACnet network sheet or the IP schedule — that is the document that also lists BBMD and foreign device settings later on.",
+                                "<strong>Choose a free address for yourself.</strong> Pick something well away from the network and gateway addresses — commonly <code>.200</code> to <code>.250</code> — and confirm it is not on the list. Do <em>not</em> reuse the workstation IP, and never use the network or broadcast address.",
+                                "<strong>Leave the gateway blank.</strong> This is the single most common mistake. If you fill in the office router (<code>192.168.1.1</code> is typical), Windows starts routing your BACnet broadcasts and the scan returns nothing. On a single subnet you do not need a gateway at all.",
+                                "<strong>Note the mask exactly as the site uses it.</strong> Do not assume /24."
+                            ]
+                        },
+                        {
+                            type: 'table',
+                            columns: ['Subnet mask', 'Prefix', 'Usable range on 10.20.30.x', 'Comment'],
+                            rows: [
+                                ['255.255.255.0', '/24', '.1 – .254', 'Most BMS networks. Also what most people assume when the site uses something else'],
+                                ['255.255.255.128', '/25', '.1 – .126', 'Two half-subnets. Getting this wrong looks exactly like &ldquo;some devices appear, some don&rsquo;t&rdquo;'],
+                                ['255.255.0.0', '/16', '.0.1 – .254.254', 'Large, flat network. Fine, but the broadcast domain is huge and scans get slow'],
+                                ['255.255.254.0', '/23', '10.20.30.1 – 10.20.31.254', 'Common in sites split across two racks — the mask crosses an octet, which is where people mis-set it']
+                            ]
+                        },
+                        {
+                            type: 'note',
+                            title: 'Why no default gateway at all?',
+                            text: "BACnet discovery is a UDP <em>broadcast</em> to 255.255.255.255 on port 47808. A router does not forward broadcasts, so once a gateway is configured and the OS decides the target is &ldquo;off-link&rdquo;, the packet never reaches the BMS segment. Keeping the gateway empty forces Windows to treat the whole segment as directly connected. If the site genuinely runs multiple BACnet subnets, discovery across them is the job of a <strong>BBMD</strong> (BACnet Broadcast Management Device) plus a foreign-device registration — that is an engineer task, not a laptop setting."
+                        },
+                        {
+                            type: 'note',
+                            tone: 'warn',
+                            title: 'Kill the other routes before you start',
+                            text: "<strong>Turn off Wi-Fi</strong> (an office Wi-Fi network will keep its own default gateway and win the route to some addresses), <strong>disconnect the VPN</strong>, and <strong>disable any unused Ethernet adapters</strong>. If YABE has more than one adapter available it may bind the wrong one. Same for hypervisors: a VirtualBox / VMware / Hyper-V virtual adapter on a different segment can absorb the broadcast."
+                        }
+                    ]
+                },
+
+                // ── 3 · Windows 11 ────────────────────────────────────────
+                {
+                    type: 'section',
+                    title: '3 · Windows 11 — set a static IPv4 address',
+                    blocks: [
+                        {
+                            type: 'figure',
+                            src: 'assets/bms-network/02-win11-manual-ip.svg',
+                            alt: 'Windows 11 Settings showing Ethernet IP assignment switched to Manual, with IPv4 address, subnet mask and the gateway field deliberately left empty',
+                            caption: 'Windows 11: Settings &#8250; Network &amp; internet &#8250; Ethernet &#8250; IP assignment &#8250; Edit &#8250; Manual.'
+                        },
+                        {
+                            type: 'steps',
+                            items: [
+                                "Open <strong>Settings &#8250; Network &amp; internet</strong> and click <strong>Ethernet</strong> on the left.",
+                                "Scroll to <strong>IP assignment</strong> and click <strong>Edit</strong>. The current value is usually <em>Automatic (DHCP)</em>, and it shows you the address the office network handed out — that one is almost certainly <em>wrong</em> for the BMS.",
+                                "Change the IP type to <strong>Manual</strong>, then click <strong>IPv4</strong> (or <strong>IPv4</strong> and <strong>IPv6</strong> if the flyout asks for both). Leave IPv6 on <strong>Automatic (DHCP)</strong> — BACnet does not use it.",
+                                "Fill in <strong>IP address</strong> (section 2, your free address), <strong>Subnet mask</strong> (copied from the BMS workstation), and leave <strong>Gateway</strong> and <strong>Preferred DNS</strong> <em>completely empty</em>.",
+                                "Click <strong>Save</strong>, then unplug and replug the cable. Windows applies the change immediately, but a replug guarantees a clean ARP cache on the segment."
+                            ]
+                        },
+                        {
+                            type: 'note',
+                            title: 'Same result, faster, on any Windows',
+                            text: "Press <strong>Win + R</strong>, type <code>ncsi.cpl</code> and press Enter. This opens the classic <em>Network Connections</em> list in one step, from which you go straight to section 4 &mdash; the dialog is the same on Windows 10, 11 and Windows Server. If you only remember one route, remember this one."
+                        }
+                    ]
+                },
+
+                // ── 4 · Windows 10 ────────────────────────────────────────
+                {
+                    type: 'section',
+                    title: '4 · Windows 10 — the same thing, classic dialogs',
+                    blocks: [
+                        {
+                            type: 'figure',
+                            src: 'assets/bms-network/03-win10-ipv4-properties.svg',
+                            alt: 'Windows 10 Network Connections list showing an APIPA address, the right-click Properties menu, and the Internet Protocol Version 4 properties dialog with a static address',
+                            caption: 'Windows 10: Network Connections &#8250; right-click Ethernet &#8250; Properties &#8250; Internet Protocol Version 4.'
+                        },
+                        {
+                            type: 'steps',
+                            items: [
+                                "Open <strong>Control Panel &#8250; Network and Internet &#8250; Network Connections</strong>, or press <strong>Win + R</strong> and run <code>ncsi.cpl</code>.",
+                                "Read what is there now. On a BMS network the Ethernet adapter will usually show <code>169.254.x.x</code> with a /16 prefix — that is Windows assigning itself an <strong>APIPA</strong> address because it asked for DHCP and nobody answered. That is the normal starting point, and it is why the scan finds nothing until you set a real address.",
+                                "Right-click <strong>Ethernet</strong> &#8250; <strong>Properties</strong>. Untick <em>Internet Protocol Version 6</em> if you want to keep things simple, or leave it &mdash; it is harmless.",
+                                "Select <strong>Internet Protocol Version 4 (TCP/IPv4)</strong> &#8250; <strong>Properties</strong>.",
+                                "Clear <strong>Obtain an IP address automatically</strong> and <strong>Obtain a DNS server address automatically</strong>, select <strong>Use the following IP address</strong>, and enter the address and mask from section 2.",
+                                "Leave <strong>Default gateway</strong> empty. Leave both DNS boxes empty. Leave <strong>Validate settings at exit</strong> ticked and the <strong>WINS</strong> tab untouched &mdash; BACnet uses neither.",
+                                "Click <strong>OK</strong>, then <strong>OK</strong> again to close the adapter dialog."
+                            ]
+                        },
+                        {
+                            type: 'note',
+                            tone: 'warn',
+                            title: 'Expect to be asked for administrator rights',
+                            text: "Changing an Ethernet adapter normally does not require elevation, but the <em>Control Panel</em> path can trigger UAC depending on policy. If the dialog is greyed out, you are not running as an administrator &mdash; close it, right-click PowerShell and choose <em>Run as administrator</em>."
+                        }
+                    ]
+                },
+
+                // ── 5 · verify ────────────────────────────────────────────
+                {
+                    type: 'section',
+                    title: '5 · Verify the link before you open YABE',
+                    blocks: [
+                        {
+                            type: 'figure',
+                            src: 'assets/bms-network/04-verify-cli.svg',
+                            alt: 'PowerShell output: ipconfig showing 10.20.30.200 with a blank gateway, a successful ping, and arp -a listing three BACnet devices on the subnet',
+                            caption: 'Three commands that tell you in ten seconds whether the addressing is right.'
+                        },
+                        {
+                            type: 'table',
+                            columns: ['Command', 'What a healthy result looks like', 'If it does not'],
+                            rows: [
+                                ['<code>ipconfig</code>', 'Your chosen address, the right mask, <strong>no default gateway</strong>', 'Still <code>169.254.x.x</code>? The static change did not take &mdash; reapply it and replug the cable'],
+                                ['<code>ping 10.20.30.40</code>', 'Four replies, 0% loss', 'A failed ping means <em>nothing</em> on its own &mdash; ICMP is often blocked. Go to section 11 only if YABE also comes back empty'],
+                                ['<code>arp -a</code>', 'A row for each BMS device on your subnet', 'Empty or only your own address means you are on the wrong segment, or the devices are down'],
+                                ['<code>Get-NetAdapter</code>', 'The Ethernet adapter shows <code>Up</code>', 'A cable, a dead switch port or a disabled adapter'],
+                                ['<code>Get-NetIPAddress -InterfaceAlias &quot;Ethernet&quot;</code>', 'Your address is listed', 'Confirms Windows actually committed the setting']
+                            ]
+                        },
+                        {
+                            type: 'note',
+                            title: 'Two things that look like failures and are not',
+                            text: "<strong>A dead ping is not proof of a problem.</strong> Ping uses ICMP, which building networks commonly block. BACnet/IP uses UDP 47808, so YABE can scan a network that answers no pings at all. <strong>Test-NetConnection is the wrong tool.</strong> It tests TCP only, so <code>TcpTestSucceeded : False</code> against port 47808 is expected and tells you nothing. The YABE device list is the only verdict that counts."
+                        }
+                    ]
+                },
+
+                // ── 6 · firewall ──────────────────────────────────────────
+                {
+                    type: 'section',
+                    title: '6 · Let UDP 47808 through Windows Defender Firewall',
+                    blocks: [
+                        {
+                            type: 'figure',
+                            src: 'assets/bms-network/05-firewall-udp-47808.svg',
+                            alt: 'Windows Defender Firewall allowing an app through, with Yabe ticked for private networks only, and an inbound rule specifying UDP port 47808',
+                            caption: 'The simple dialog is usually enough &mdash; but the inbound rule is the one that survives a Windows update.'
+                        },
+                        {
+                            type: 'note',
+                            tone: 'warn',
+                            title: 'Why this step is skipped more often than any other',
+                            text: "A machine with a good static IP, a working cable and a live BMS will still discover <strong>zero devices</strong> if Windows Defender Firewall blocks the UDP 47808 reply. The request goes out, the devices answer, and the answers are dropped before YABE sees them. There is no error message &mdash; the log just stays silent."
+                        },
+                        {
+                            type: 'steps',
+                            items: [
+                                "Open <strong>Windows Defender Firewall with Advanced Security</strong> (or the simpler <em>Allow an app to communicate through Windows Defender Firewall</em> link from the Windows Security notification).",
+                                "Tick <strong>Yabe</strong> under <strong>Private networks</strong>. Leave <strong>Public networks</strong> unticked &mdash; a BMS cable is a physically secured private network, and opening 47808 to the public profile is unnecessary exposure.",
+                                "Check the <strong>network profile</strong> is right: <strong>Settings &#8250; Network &amp; internet &#8250; Ethernet &#8250; Network profile type</strong> must say <strong>Private</strong>. If Windows picked <em>Public</em> because there is no domain, change it &mdash; otherwise the private tick is ignored.",
+                                "For something that has to keep working, add the explicit inbound rule too: <strong>Inbound Rules &#8250; New Rule &#8250; Custom</strong> &rarr; Program = the Yabe executable &rarr; Protocol = <strong>UDP</strong> &rarr; Local port = <strong>47808</strong> &rarr; Remote IP = your BMS subnet &rarr; Profile = All &rarr; Action = <em>Allow the connection</em>.",
+                                "The same thing from an administrator PowerShell: <code>netsh advfirewall firewall add rule name=\"YABE BACnet UDP 47808\" dir=in action=allow protocol=UDP localport=47808 remoteip=10.20.30.0/24 profile=any</code>"
+                            ]
+                        },
+                        {
+                            type: 'note',
+                            title: 'Both directions, one port',
+                            text: "BACnet discovery is a UDP broadcast on 47808 and every reply comes back as a unicast to that same port. Filter the outbound or the inbound and you get a network that is demonstrably healthy and a scanner that finds nothing. This is the reason to allow the port rather than merely the executable."
+                        }
+                    ]
+                },
+
+                // ── 7 · install YABE ──────────────────────────────────────
+                {
+                    type: 'section',
+                    title: '7 · Install and open YABE',
+                    blocks: [
+                        {
+                            type: 'figure',
+                            src: 'assets/bms-network/06-yabe-add-device.svg',
+                            alt: 'YABE with the Functions menu open on Add device, and the network adapter selection listing Ethernet, Wi-Fi and COM ports',
+                            caption: 'Functions &#8250; <strong>Add device</strong> &mdash; then pick the Ethernet adapter, not Wi-Fi.'
+                        },
+                        {
+                            type: 'table',
+                            columns: ['Step', 'Detail'],
+                            rows: [
+                                ['Where to get it', 'The project page is <strong>yetanotherbacnetexplorer.sourceforge.io</strong>, hosted on SourceForge. It is free and open source (GPL), written in C#, and runs on Windows without a separate .NET install'],
+                                ['Which file', 'The current release is <strong>2.1.0</strong>. On Windows take <code>SetupYabe_v2.1.0.exe</code>; <code>Yabe_v2.1.0.zip</code> is the portable build if you cannot install on the laptop'],
+                                ['If it will not start', 'Check whether the build needs the Visual C++ or .NET runtime; the portable zip avoids this entirely'],
+                                ['Npcap first', 'Ethernet and Wi-Fi adapters go through a packet capture driver, so <strong>Npcap</strong> (or legacy WinPcap) must be installed on the machine. Without it the adapter list is empty and <em>Add</em> does nothing. Installing Wireshark brings Npcap with it'],
+                                ['Which adapter', 'Choose the <strong>Ethernet</strong> entry &mdash; the one that now carries your BMS address. Never the Wi-Fi, never the VPN, never a virtual machine adapter'],
+                                ['UDP port', '<strong>47808</strong> (0xBAC0), the BACnet/IP default. Leave it unless the site runs its broadcast table on a different port, which you would be told about explicitly'],
+                                ['BBMD field', 'Leave it empty on a single subnet. Only fill it in if the BMS engineer has registered you as a foreign device against a BBMD'],
+                                ['Read-only', 'Do not enable any write option. If a dialog offers ReinitializeDevice, DeviceCommunicationControl or Backup/Restore, close it &mdash; those commands disturb a running building']
+                            ]
+                        },
+                        {
+                            type: 'note',
+                            title: 'One client per machine',
+                            text: "BACnet/IP discovery shares UDP port 47808, and YABE is explicit about the consequence: run only one BACnet tool per machine unless it uses an exclusive-socket option. If the site engineer already has a BACnet analyser running on the laptop, close it before starting YABE &mdash; otherwise one of the two will find nothing and it will look like a network fault."
+                        }
+                    ]
+                },
+
+                // ── 8 · scan ──────────────────────────────────────────────
+                {
+                    type: 'section',
+                    title: '8 · Scan and capture the devices',
+                    blocks: [
+                        {
+                            type: 'figure',
+                            src: 'assets/bms-network/07-yabe-scan-results.svg',
+                            alt: 'YABE device tree with five BACnet devices found, and the Device object properties panel showing vendor id, model, firmware, IP address and UDP port',
+                            caption: 'What success looks like &mdash; and the Device object panel on the right is the first deliverable we need.'
+                        },
+                        {
+                            type: 'steps',
+                            items: [
+                                "With the adapter added, let YABE discover. Devices appear in the tree within a second or two on a normal network; give a large site a minute.",
+                                "For every device node, select it and read its <strong>Device object properties</strong>. This is where the identity of the device comes from &mdash; see the table below.",
+                                "Expand each device and read <strong>all properties</strong> on every object. Until you do, the tree shows the raw identifier (<code>ANALOG_INPUT:0</code>) instead of the name (<code>Outdoor_DryBulb_Temp</code>); the numeric id is always the real key and stays available in the tooltip.",
+                                "Check for <strong>duplicate device instances</strong>. Every BACnet Object Identifier on the network is unique, including the supervisory controller&rsquo;s own. Two nodes reporting the same instance number means a genuine configuration fault &mdash; report it, do not try to work around it.",
+                                "Note the scan conditions: date, your name, who authorised it, and the IP you used. That record belongs with the data."
+                            ]
+                        },
+                        {
+                            type: 'table',
+                            columns: ['Device object property', 'Why we need it', 'Example'],
+                            rows: [
+                                ['Object Name', 'Matches the name in the vendor export, so we can join the two sheets', 'NAE8500-01'],
+                                ['Object Instance', 'Part of the unique BACnet address of the device itself', '12'],
+                                ['Vendor ID / Vendor Name', 'The ASHRAE vendor code &mdash; the only way to identify an unnamed device', '17 / Johnson Controls'],
+                                ['Model Name', 'Tells us what the device can do and which points should exist on it', 'NAE8500'],
+                                ['Firmware Revision', 'Decides which manual and which object set apply', '12.0.8'],
+                                ['Application Software Version', 'Differentiates two devices reporting the same firmware', '4.2'],
+                                ['Protocol Version Supported', 'Confirms the BACnet revision &mdash; 19 for 135-2020', '19'],
+                                ['Protocol Object Types Supported', 'What to expect in the object list; a missing type is a real finding', 'AI AO AV BI BO BV MSI MSO MSV'],
+                                ['BACnet IP Address &amp; UDP port', 'How to reach it again outside the site', '10.20.30.40 / 47808']
+                            ]
+                        }
+                    ]
+                },
+
+                // ── 9 · MS/TP ─────────────────────────────────────────────
+                {
+                    type: 'section',
+                    title: '9 · If the trunk is BACnet MS/TP (RS-485)',
+                    blocks: [
+                        {
+                            type: 'figure',
+                            src: 'assets/bms-network/08-mstp-rs485.svg',
+                            alt: 'RS-485 daisy chain from a USB-to-RS485 adapter to four controllers with 120 ohm terminations at both ends, next to the YABE MS/TP port and source address settings',
+                            caption: 'MS/TP has no IP addresses &mdash; the laptop talks serial, so sections 2 to 8 do not apply.'
+                        },
+                        {
+                            type: 'note',
+                            title: 'No IP, no firewall, no subnet',
+                            text: "On MS/TP the laptop&rsquo;s IP address is irrelevant: BACnet/IP does not exist on that bus. What matters is the serial adapter, the COM port and the wiring. The firewall section does not apply either. Sections 10 onwards still do."
+                        },
+                        {
+                            type: 'steps',
+                            items: [
+                                "Plug in an <strong>isolated USB-to-RS485 adapter</strong>. Check it appears in <strong>Device Manager &#8250; Ports</strong> as a COM port &mdash; if not, the driver is missing, which is the first thing to fix.",
+                                "In YABE use <strong>Functions &#8250; Add device</strong>, choose the COM port in the port list and press <strong>Add</strong>. YABE is tested with FTDI adapters; CH340 works too.",
+                                "YABE will ask you to define a <strong>source address</strong> when the field is <code>-1</code>. Pick a MAC between 0 and 254 that <em>no real device is using</em>. By default YABE lists the free addresses in the tree and shows unanswered <em>PollForMaster</em> calls, which is how you read the bus and pick a safe number. <strong>Never</strong> reuse a live device address &mdash; that breaks the network for everyone else.",
+                                "Leave <strong>MSTP free-address display</strong> on. It is the single most useful diagnostic on a serial bus.",
+                                "Turn the <strong>MSTP state machine log</strong> on when a device will not appear. It is verbose, but it tells you whether the frame left the port at all.",
+                                "Scan. MS/TP is a polled token bus, so discovery is much slower than IP &mdash; allow a minute per dozen devices."
+                            ]
+                        },
+                        {
+                            type: 'note',
+                            tone: 'warn',
+                            title: 'Wiring rules that decide whether anything works',
+                            text: "<strong>120 &#937; termination at the first and last device only</strong> &mdash; anywhere else distorts the signal. <strong>Bias / fail-safe resistors at one end only.</strong> <strong>A and B reversed means nothing scans</strong> and it is the first thing to try: swap the pair at the adapter, it costs nothing. Connect the <strong>shield to one end only</strong> (the panel end) or you create a ground loop. And <em>never</em> cut or unplug a live trunk to gain access &mdash; tie in at an existing spare connector on a panel, with the site engineer present."
+                        }
+                    ]
+                },
+
+                // ── 10 · export ───────────────────────────────────────────
+                {
+                    type: 'section',
+                    title: '10 · Get the point list out',
+                    blocks: [
+                        {
+                            type: 'figure',
+                            src: 'assets/bms-network/09-yabe-object-export.svg',
+                            alt: 'The YABE object list as a table, and a table mapping each column to either the YABE scan or the vendor point export',
+                            caption: 'A YABE object list on its own is not a point list &mdash; some columns only exist in the vendor export.'
+                        },
+                        {
+                            type: 'table',
+                            columns: ['Column', 'From the YABE scan', 'From the vendor point export'],
+                            rows: [
+                                ['Object type + instance', 'Yes &mdash; the unique key', 'Usually absent; add it from this scan'],
+                                ['Present value (liveness)', 'Yes &mdash; proves the point answers now', 'Sometimes'],
+                                ['Engineering units', 'Often present', 'Usually cleaner and more authoritative'],
+                                ['Description', 'Sometimes &mdash; vendor-specific', 'Usually present'],
+                                ['Location / building hierarchy', '<strong>No</strong>', '<strong>Required</strong> &mdash; this is why the export is still needed'],
+                                ['Read / write access', 'Property exists; your policy decides', 'Required'],
+                                ['Out-of-service &amp; alarm flags', 'Yes &mdash; find points that exist but lie', 'Usually present too'],
+                                ['Historisation configured?', 'No &mdash; a workstation setting', 'Recommended']
+                            ]
+                        },
+                        {
+                            type: 'note',
+                            title: 'Export mechanics differ between YABE versions',
+                            text: "The current release keeps a session file under <strong>File &#8250; Save As</strong> and can log subscribed values and events to CSV by right-clicking the monitor panel; older builds and the community plugins copy the object list straight out of the tree to the clipboard. Whatever your build offers, the <em>outcome</em> must be one CSV with the device, object type, instance, name, present value, units and out-of-service flag on every row. If your version offers no export at all, select the device, expand it, copy, and paste into a spreadsheet &mdash; then tidy the columns."
+                        },
+                        {
+                            type: 'checklist',
+                            items: [
+                                "One row per device with the nine Device object properties from section 8",
+                                "One row per object with device, type, instance, name, value, units, out-of-service",
+                                "The object instance for every point &mdash; a trend file without it cannot be tied back to equipment",
+                                "A note of which adapter, port and address you used, and the date",
+                                "Your own tag for each point, if the site already has one"
+                            ]
+                        }
+                    ]
+                },
+
+                // ── 11 · troubleshooting ──────────────────────────────────
+                {
+                    type: 'section',
+                    title: '11 · Troubleshooting',
+                    blocks: [
+                        {
+                            type: 'table',
+                            columns: ['Symptom', 'Most likely cause', 'What to do'],
+                            rows: [
+                                ['<code>ipconfig</code> still shows <code>169.254.x.x</code>', 'The static address did not commit, or the adapter is set to Automatic again', 'Re-apply the manual address and replug the cable. If a DHCP server exists on the BMS segment it will keep overwriting you &mdash; the site must reserve or exclude your address'],
+                                ['Laptop has the right IP, YABE finds nothing', 'Default gateway filled in, or Wi-Fi / VPN / a VM adapter is winning the route', 'Empty the gateway field. Switch off Wi-Fi, disconnect the VPN, disable unused and virtual adapters, then rescan'],
+                                ['Only <em>some</em> devices appear', 'Wrong subnet mask, or you are on a different VLAN', 'Copy the mask exactly from the BMS workstation. Check with the switch port config whether the BMS devices are VLAN-tagged'],
+                                ['Ping fails but the scan is also empty', 'Wrong subnet, cable, or dead switch port &mdash; ICMP failure alone proves nothing', 'Run <code>arp -a</code>. No rows for the devices means layer 2 is the problem: cable, port, or the wrong VLAN'],
+                                ['Ping works, YABE still finds nothing', 'Windows Defender Firewall is dropping the UDP 47808 replies', 'Section 6. This is the single most common cause on a correctly addressed laptop'],
+                                ['Nothing at all, on a network you know is alive', 'Crossing a router, or a VLAN filter that blocks broadcasts', 'Discovery cannot cross a router by itself. A BBMD with a foreign-device registration is required &mdash; that is an engineer task'],
+                                ['Devices appear then disappear during a long scan', 'The network is busy, or segmentation is failing on large reads', 'In YABE Options set <strong>Segments_Max</strong> to <code>0</code> to disable segmentation, then rescan'],
+                                ['Device shows but its object list is empty', 'Properties were never read &mdash; the tree only knows the Device object', 'Select the device and use the read-all / read-properties function on every object, then expand'],
+                                ['Two nodes report the same device instance', 'A genuine BACnet fault: duplicate Object Identifiers on one network', 'Report it to the BMS engineer. Do not rename anything to make it go away'],
+                                ['Object names show as <code>ANALOG_INPUT:0</code>', 'Properties not read yet, or the device has no PROP_NAME', 'Read the properties. If there is still no name, the numeric id <em>is</em> the identifier &mdash; use it and ask the site for the tag'],
+                                ['Every device is <code>COMM_UNREACHABLE</code> or errors on read', 'A device in alarm, or its network stack is down', 'Check the controller&rsquo;s own status LED and the BMS alarm list. A device that cannot talk cannot be scanned'],
+                                ['YABE adapter list is empty', 'Npcap / WinPcap not installed', 'Install Npcap (Wireshark bundles it), restart YABE'],
+                                ['YABE cannot be added to, or nothing binds', 'Another BACnet tool is already holding UDP 47808 on that machine', 'Close the other analyser. YABE notes that only one client per machine works reliably without the exclusive-socket option'],
+                                ['MS/TP: no devices, no errors', 'A and B reversed, or no common ground between adapter and bus', 'Swap A and B at the adapter first. Verify the SHD / reference connection'],
+                                ['MS/TP: random devices or timeouts', 'Missing or duplicated 120 &#937; terminations, or bias resistors at the wrong end', 'Termination at the first and last device only; bias at one end only. On a long trunk this is the usual cause'],
+                                ['MS/TP: a device will not appear at all', 'MSTP address collision, or the speed does not match', 'Check for a duplicate MAC on the bus. Turn on the MSTP state machine log and read the bus traffic'],
+                                ['Everything worked yesterday, nothing today', 'The laptop address was left static, or a Windows update reset the firewall', 'Re-check <code>ipconfig</code> and the firewall rules; re-run the scan after a reboot']
+                            ]
+                        },
+                        {
+                            type: 'note',
+                            title: 'Escalate rather than troubleshoot these',
+                            text: "Anything to do with <strong>writing to the building</strong>, <strong>rebooting a controller</strong>, <strong>changing a subnet or VLAN</strong>, <strong>editing the BBMD table</strong>, or <strong>duplicate device instances</strong> &mdash; stop and hand it to the BMS contractor. Those are engineering tasks with plant consequences, and the scan you have is already worth more to them than an afternoon of guesswork."
+                        }
+                    ]
+                },
+
+                // ── 12 · restore ──────────────────────────────────────────
+                {
+                    type: 'section',
+                    title: '12 · Put the laptop back the way you found it',
+                    blocks: [
+                        {
+                            type: 'steps',
+                            items: [
+                                "Set the Ethernet adapter back to <strong>Automatic (DHCP)</strong> in the same place you changed it.",
+                                "Re-enable Wi-Fi and reconnect the VPN, and re-enable any adapter you disabled in section 2.",
+                                "Unplug the cable &mdash; and only the cable you plugged in.",
+                                "If you added a firewall rule, leave it; it is harmless and the next person will need it. Mention it in your handover note.",
+                                "Send the two deliverables from section 10, plus a one-line note of the conditions the scan ran under."
+                            ]
+                        },
+                        {
+                            type: 'note',
+                            title: 'Why this matters',
+                            text: "A laptop left on a static BMS address looks like a rogue machine to the site&rsquo;s network team, and its missing gateway silently breaks email, printing and VPN for whoever picks it up next. Ten seconds of tidying prevents a ticket."
+                        }
+                    ]
+                },
+
+                {
+                    type: 'refs',
+                    items: [
+                        { label: 'YABE — project page and documentation (Yet Another BACnet Explorer, GPL)', url: 'https://yetanotherbacnetexplorer.sourceforge.io/' },
+                        { label: 'YABE — releases and downloads, including SetupYabe_v2.1.0.exe', url: 'https://sourceforge.net/projects/yetanotherbacnetexplorer/files/' },
+                        { label: 'BACnet Committee — developer aids, including the YABE entry and protocol references', url: 'https://bacnet.org/developer-aids/' },
+                        { label: 'Microsoft — best practices for configuring Windows Firewall', url: 'https://learn.microsoft.com/en-us/windows/security/operating-system-security/network-security/windows-firewall/best-practices-configuring' },
+                        { label: 'Microsoft — Windows Firewall overview, including the built-in UDP rule groups', url: 'https://learn.microsoft.com/en-us/windows/security/operating-system-security/network-security/windows-firewall/' },
+                        { label: 'Wireshark / Npcap — the packet capture driver YABE needs for Ethernet and Wi-Fi adapters', url: 'https://www.wireshark.org/' }
+                    ]
+                }
+            ]
+        },
+
         honeywell: {
             title: "Honeywell EBI — Point List &amp; Trend Export",
             wide: true,
@@ -1011,6 +1453,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     return `<div class="guide-note${block.tone === 'warn' ? ' is-warn' : ''}">${block.title ? `<strong>${block.title}</strong>` : ''}<p>${block.text}</p></div>`;
                 case 'table':
                     return `<div class="guide-table-wrap"><table class="guide-table"><thead><tr>${block.columns.map(c => `<th>${c}</th>`).join('')}</tr></thead><tbody>${block.rows.map(row => `<tr>${row.map(cell => `<td>${cell}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+                case 'figure':
+                    return `<figure class="guide-figure"><a class="guide-figure-link" href="${block.src}" target="_blank" rel="noopener noreferrer" title="Open full size"><img src="${block.src}" alt="${block.alt}" loading="lazy"></a><figcaption>${block.caption}</figcaption></figure>`;
                 case 'refs':
                     return `<ul class="guide-refs">${block.items.map(ref => `<li>${ref.label} — <a href="${ref.url}" target="_blank" rel="noopener noreferrer">${ref.url}</a></li>`).join('')}</ul>`;
                 default:

@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 560" width="920" height="560" role="img" aria-label="PowerShell verification: ipconfig shows the static address and a blank gateway, ping and arp confirm the subnet">
+  <rect x="0" y="0" width="920" height="560" fill="#0A0C0B"/>
+
+  <rect x="14" y="30" width="892" height="508" rx="8" fill="#0C0C0C" stroke="#2E2E2E"/>
+  <!-- tab bar -->
+  <rect x="14" y="30" width="892" height="36" rx="8" fill="#1F1F1F"/>
+  <rect x="14" y="50" width="892" height="16" fill="#1F1F1F"/>
+  <rect x="26" y="38" width="230" height="28" rx="6" fill="#0C0C0C"/>
+  <text x="44" y="57" fill="#FFFFFF" font-family="'Segoe UI', Tahoma, sans-serif" font-size="11.5">Administrator: Windows PowerShell</text>
+  <line x1="26" y1="65" x2="256" y2="65" stroke="#00e696" stroke-width="2"/>
+  <path d="M274 46 l10 10 M284 46 l-10 10" stroke="#A0A0A0" stroke-width="1.2"/>
+  <path d="M862 46 h10" stroke="#A0A0A0" stroke-width="1.2"/>
+  <rect x="882" y="41" width="9" height="9" fill="none" stroke="#A0A0A0"/>
+  <path d="M900 41 l9 9 M909 41 l-9 9" stroke="#A0A0A0" stroke-width="1.2"/>
+
+  <g font-family="Consolas, 'Courier New', monospace" font-size="12">
+    <text x="30" y="92" fill="#00e696">PS C:\&gt;</text><text x="100" y="92" fill="#FFFFFF">ipconfig</text>
+
+    <text x="30" y="128" fill="#C8D0CC">Windows IP Configuration</text>
+
+    <text x="30" y="164" fill="#C8D0CC">Ethernet adapter Ethernet:</text>
+
+    <text x="30" y="200" fill="#C8D0CC">   IPv4 Address . . . . . . . . . . :</text><text x="330" y="200" fill="#FFFFFF">10.20.30.200</text>
+    <text x="30" y="218" fill="#C8D0CC">   Subnet Mask . . . . . . . . . . . :</text><text x="330" y="218" fill="#FFFFFF">255.255.255.0</text>
+    <text x="30" y="236" fill="#C8D0CC">   Default Gateway . . . . . . . . . :</text>
+
+    <text x="30" y="272" fill="#00e696">PS C:\&gt;</text><text x="100" y="272" fill="#FFFFFF">ping 10.20.30.40</text>
+
+    <text x="30" y="308" fill="#C8D0CC">Pinging 10.20.30.40 with 32 bytes of data:</text>
+    <text x="30" y="326" fill="#C8D0CC">Reply from 10.20.30.40: bytes=32 time=1ms TTL=128</text>
+    <text x="30" y="344" fill="#C8D0CC">Reply from 10.20.30.40: bytes=32 time=0ms TTL=128</text>
+
+    <text x="30" y="380" fill="#C8D0CC">    Sent = 2, Received = 2, Lost = 0 (0% loss)</text>
+
+    <text x="30" y="416" fill="#00e696">PS C:\&gt;</text><text x="100" y="416" fill="#FFFFFF">arp -a</text>
+    <text x="30" y="434" fill="#C8D0CC">Interface: 10.20.30.200 --- 0xb</text>
+    <text x="30" y="452" fill="#C8D0CC">  10.20.30.1</text><text x="170" y="452" fill="#C8D0CC">00-1c-44-0a-9b-21</text><text x="320" y="452" fill="#9AA5A0">dynamic</text>
+    <text x="30" y="470" fill="#C8D0CC">  10.20.30.40</text><text x="170" y="470" fill="#C8D0CC">00-1c-44-3f-71-c0</text><text x="320" y="470" fill="#9AA5A0">dynamic</text>
+    <text x="30" y="488" fill="#C8D0CC">  10.20.30.71</text><text x="170" y="488" fill="#C8D0CC">00-1c-44-7b-02-e5</text><text x="320" y="488" fill="#9AA5A0">dynamic</text>
+
+    <text x="30" y="524" fill="#00e696">PS C:\&gt;</text><text x="100" y="524" fill="#FFFFFF">Test-NetConnection 10.20.30.40 -Port 47808</text>
+  </g>
+
+  <!-- annotations -->
+  <line x1="336" y1="236" x2="596" y2="236" stroke="#00e696" stroke-width="1" stroke-dasharray="3 3"/>
+  <circle cx="336" cy="236" r="3" fill="#00e696"/>
+  <text x="606" y="240" fill="#00e696" font-family="'Segoe UI', Tahoma, sans-serif" font-size="11">Blank is the correct value here</text>
+
+  <rect x="600" y="262" width="292" height="88" rx="8" fill="rgba(255,190,50,0.06)" stroke="#FFBe32" stroke-width="1"/>
+  <text x="614" y="284" fill="#FFBe32" font-family="'Segoe UI', Tahoma, sans-serif" font-size="10.5" font-weight="600">Failed ping &#8800; failed scan</text>
+  <text x="614" y="302" fill="#D8C79A" font-family="'Segoe UI', Tahoma, sans-serif" font-size="10">Ping uses ICMP, which many BMS networks</text>
+  <text x="614" y="318" fill="#D8C79A" font-family="'Segoe UI', Tahoma, sans-serif" font-size="10">block. BACnet/IP uses UDP 47808, so a dead</text>
+  <text x="614" y="334" fill="#D8C79A" font-family="'Segoe UI', Tahoma, sans-serif" font-size="10">ping can still scan perfectly. Trust YABE.</text>
+
+  <line x1="356" y1="380" x2="596" y2="380" stroke="#00e696" stroke-width="1" stroke-dasharray="3 3"/>
+  <circle cx="356" cy="380" r="3" fill="#00e696"/>
+  <text x="606" y="384" fill="#00e696" font-family="'Segoe UI', Tahoma, sans-serif" font-size="11">0% loss = layer 3 fine</text>
+
+  <line x1="356" y1="470" x2="596" y2="470" stroke="#00e696" stroke-width="1" stroke-dasharray="3 3"/>
+  <circle cx="356" cy="470" r="3" fill="#00e696"/>
+  <text x="606" y="474" fill="#00e696" font-family="'Segoe UI', Tahoma, sans-serif" font-size="11">ARP = devices answering</text>
+  <text x="606" y="492" fill="#9AA5A0" font-family="'Segoe UI', Tahoma, sans-serif" font-size="10.5">on this exact subnet</text>
+
+  <line x1="446" y1="524" x2="596" y2="524" stroke="#FFBe32" stroke-width="1" stroke-dasharray="3 3"/>
+  <circle cx="446" cy="524" r="3" fill="#FFBe32"/>
+  <text x="606" y="520" fill="#FFBe32" font-family="'Segoe UI', Tahoma, sans-serif" font-size="10.5">This test is TCP only — BACnet is UDP,</text>
+  <text x="606" y="536" fill="#FFBe32" font-family="'Segoe UI', Tahoma, sans-serif" font-size="10.5">so <tspan font-weight="600">False</tspan> here is expected. Ignore it.</text>
+</svg>

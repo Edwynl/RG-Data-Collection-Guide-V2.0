@@ -1,0 +1,107 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 560" width="920" height="560" role="img" aria-label="YABE scan results: five BACnet devices in the tree and the Device object properties we need">
+  <rect x="0" y="0" width="920" height="560" fill="#0A0C0B"/>
+
+  <rect x="14" y="36" width="892" height="496" rx="6" fill="#F0F0F0" stroke="#A8A8A8"/>
+  <rect x="14" y="36" width="892" height="28" fill="#F5F5F5"/>
+  <line x1="14" y1="64" x2="906" y2="64" stroke="#D2D2D2"/>
+  <text x="26" y="55" fill="#1A1A1A" font-family="'Segoe UI', Tahoma, sans-serif" font-size="10.5">Yet Another BACnet Explorer — 10.20.30.0/24</text>
+  <path d="M868 53 h10" stroke="#5A5A5A"/><rect x="886" y="46" width="9" height="9" fill="none" stroke="#5A5A5A"/>
+
+  <rect x="14" y="64" width="892" height="24" fill="#F0F0F0"/>
+  <g font-family="'Segoe UI', Tahoma, sans-serif" font-size="9.5" fill="#1A1A1A">
+    <text x="28" y="80">File</text><text x="58" y="80">Functions</text><text x="118" y="80">BACnet</text>
+    <text x="168" y="80">Objects</text><text x="218" y="80">View</text><text x="254" y="80">Options</text><text x="302" y="80">Help</text>
+  </g>
+
+  <!-- ══ device tree ══ -->
+  <rect x="24" y="96" width="430" height="330" fill="#FFFFFF" stroke="#C4C4C4"/>
+  <rect x="24" y="96" width="430" height="22" fill="#F0F0F0"/>
+  <text x="34" y="111" fill="#404040" font-family="'Segoe UI', Tahoma, sans-serif" font-size="9">Devices (5)</text>
+
+  <g font-family="Consolas, 'Courier New', monospace" font-size="10">
+    <rect x="26" y="120" width="426" height="18" fill="#E5EFFA"/>
+    <text x="34" y="133" fill="#0067C0">&#9662; DEVICE:12   NAE8500-01</text><text x="290" y="133" fill="#00795C">10.20.30.40</text>
+    <text x="48" y="153" fill="#404040">&#9656; ANALOG_INPUT:1  Outdoor_DryBulb_Temp</text>
+    <text x="48" y="173" fill="#404040">&#9656; ANALOG_INPUT:2  Supply_Air_Temp</text>
+    <text x="48" y="193" fill="#404040">&#9656; BINARY_INPUT:3   Zone_Temp_High_Alarm</text>
+
+    <text x="34" y="217" fill="#1A1A1A">&#9662; DEVICE:1    BACnetIP-GW</text><text x="290" y="217" fill="#00795C">10.20.30.1</text>
+    <text x="48" y="237" fill="#404040">&#9656; ANALOG_VALUE:1   Trend_Log_Interval</text>
+
+    <text x="34" y="261" fill="#1A1A1A">&#9662; DEVICE:71   FCU-L3-011</text><text x="290" y="261" fill="#00795C">10.20.30.71</text>
+    <text x="48" y="281" fill="#404040">&#9656; ANALOG_INPUT:1  Zone_Temp</text>
+    <text x="48" y="301" fill="#404040">&#9656; ANALOG_INPUT:2  Fan_Speed_Command</text>
+
+    <text x="34" y="325" fill="#1A1A1A">&#9656; DEVICE:72   FCU-L3-012</text><text x="290" y="325" fill="#00795C">10.20.30.72</text>
+    <text x="34" y="349" fill="#1A1A1A">&#9656; DEVICE:4    AHU-01</text><text x="290" y="349" fill="#00795C">10.20.30.80</text>
+    <text x="34" y="373" fill="#1A1A1A">&#9656; DEVICE:4    AHU-02</text><text x="290" y="373" fill="#00795C">10.20.30.81</text>
+  </g>
+
+  <rect x="26" y="386" width="426" height="34" rx="3" fill="#F5F5F5"/>
+  <text x="34" y="400" fill="#606060" font-family="'Segoe UI', Tahoma, sans-serif" font-size="8.5">The object id stays in the tooltip and in the export — the name only replaces it</text>
+  <text x="34" y="413" fill="#606060" font-family="'Segoe UI', Tahoma, sans-serif" font-size="8.5">after the properties have been read. Keep both.</text>
+
+  <!-- ══ device properties ══ -->
+  <rect x="464" y="96" width="432" height="330" fill="#FFFFFF" stroke="#C4C4C4"/>
+  <rect x="464" y="96" width="432" height="22" fill="#F0F0F0"/>
+  <text x="474" y="111" fill="#404040" font-family="'Segoe UI', Tahoma, sans-serif" font-size="9">DEVICE:12 — Device object properties (read only)</text>
+
+  <g>
+    <rect x="468" y="124" width="424" height="24" fill="#FAFBFA"/>
+    <rect x="468" y="176" width="424" height="24" fill="#FAFBFA"/>
+    <rect x="468" y="228" width="424" height="24" fill="#FAFBFA"/>
+    <rect x="468" y="280" width="424" height="24" fill="#FAFBFA"/>
+    <rect x="468" y="332" width="424" height="24" fill="#FAFBFA"/>
+  </g>
+  <g font-family="'Segoe UI', Tahoma, sans-serif" font-size="9.5" fill="#606060">
+    <text x="480" y="140">Object Name</text>
+    <text x="480" y="166">Object Instance</text>
+    <text x="480" y="192">Vendor ID</text>
+    <text x="480" y="218">Vendor Name</text>
+    <text x="480" y="244">Model Name</text>
+    <text x="480" y="270">Firmware Revision</text>
+    <text x="480" y="296">Application Software Version</text>
+    <text x="480" y="322">Protocol Version Supported</text>
+    <text x="480" y="348">BACnet IP Address</text>
+    <text x="480" y="374">UDP Port</text>
+    <text x="480" y="400">Protocol Object Types</text>
+  </g>
+  <g font-family="Consolas, monospace" font-size="10" fill="#1A1A1A">
+    <text x="660" y="140">NAE8500-01</text>
+    <text x="660" y="166">12</text>
+    <text x="660" y="192" fill="#0067C0" font-weight="600">17</text>
+    <text x="660" y="218">Johnson Controls</text>
+    <text x="660" y="244">NAE8500</text>
+    <text x="660" y="270">12.0.8</text>
+    <text x="660" y="296">4.2</text>
+    <text x="660" y="322">19</text>
+    <text x="660" y="348">10.20.30.40</text>
+    <text x="660" y="374">47808</text>
+  </g>
+  <text x="660" y="400" fill="#1A1A1A" font-family="'Segoe UI', Tahoma, sans-serif" font-size="9">AI AO AV BI BO BV MSI MSO MSV Schedule Trend Log</text>
+
+  <!-- ══ log strip ══ -->
+  <rect x="24" y="436" width="560" height="76" fill="#1A1A1A"/>
+  <g font-family="Consolas, monospace" font-size="9.5">
+    <text x="34" y="454" fill="#9AA5A0">10:04:13</text><text x="94" y="454" fill="#00e696">Who-Is sent — limited broadcast 255.255.255.255:47808</text>
+    <text x="34" y="470" fill="#9AA5A0">10:04:13</text><text x="94" y="470" fill="#C8D0CC">I-Am  10.20.30.40  device 12  NAE8500-01</text>
+    <text x="34" y="486" fill="#9AA5A0">10:04:13</text><text x="94" y="486" fill="#C8D0CC">I-Am  10.20.30.1   device 1   BACnetIP-GW</text>
+    <text x="34" y="502" fill="#9AA5A0">10:04:34</text><text x="94" y="502" fill="#00e696">5 devices · 0 duplicates · 3,412 objects read in 21 s</text>
+  </g>
+
+  <rect x="596" y="436" width="300" height="76" rx="4" fill="rgba(0,230,150,0.05)" stroke="#00e696" stroke-width="1.2"/>
+  <text x="610" y="456" fill="#00e696" font-family="'Segoe UI', Tahoma, sans-serif" font-size="10" font-weight="600">This panel is deliverable A</text>
+  <text x="610" y="472" fill="#C9D2CE" font-family="'Segoe UI', Tahoma, sans-serif" font-size="9.5">One row per device: vendor id, model, firmware,</text>
+  <text x="610" y="486" fill="#C9D2CE" font-family="'Segoe UI', Tahoma, sans-serif" font-size="9.5">IP, port. The object list you export is</text>
+  <text x="610" y="500" fill="#C9D2CE" font-family="'Segoe UI', Tahoma, sans-serif" font-size="9.5">deliverable B.</text>
+
+  <!-- ══ badges ══ -->
+  <g font-family="'Segoe UI', Tahoma, sans-serif" font-size="11" font-weight="700" text-anchor="middle">
+    <circle cx="36" cy="129" r="11" fill="#00e696"/><text x="36" y="133" fill="#04140F">1</text>
+    <circle cx="628" cy="205" r="11" fill="#00e696"/><text x="628" y="209" fill="#04140F">2</text>
+    <circle cx="628" cy="257" r="11" fill="#00e696"/><text x="628" y="261" fill="#04140F">3</text>
+    <circle cx="628" cy="361" r="11" fill="#00e696"/><text x="628" y="365" fill="#04140F">4</text>
+  </g>
+
+  <text x="20" y="552" fill="#5C6763" font-family="'Segoe UI', Tahoma, sans-serif" font-size="10">示意图 (schematic) — device names, addresses and vendor ids are worked examples, not real site data.</text>
+</svg>

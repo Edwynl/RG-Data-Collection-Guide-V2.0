@@ -1,0 +1,102 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 560" width="920" height="560" role="img" aria-label="Windows Defender Firewall: allow Yabe on private networks and add an inbound rule for UDP port 47808">
+  <rect x="0" y="0" width="920" height="560" fill="#0A0C0B"/>
+
+  <!-- ══ Panel A: Allow an app ══ -->
+  <rect x="14" y="36" width="430" height="492" rx="6" fill="#F0F0F0" stroke="#A8A8A8"/>
+  <rect x="14" y="36" width="430" height="30" fill="#F5F5F5"/>
+  <line x1="14" y1="66" x2="444" y2="66" stroke="#D2D2D2"/>
+  <text x="26" y="56" fill="#1A1A1A" font-family="'Segoe UI', Tahoma, sans-serif" font-size="10">Allow an app to communicate through Windows Defender Firewall</text>
+
+  <rect x="26" y="80" width="406" height="46" rx="4" fill="#FFF8E1" stroke="#E0BE62"/>
+  <text x="38" y="100" fill="#7A5B00" font-family="'Segoe UI', Tahoma, sans-serif" font-size="9.5" font-weight="600">Windows Defender Firewall has blocked some features of this app.</text>
+  <text x="38" y="116" fill="#7A5B00" font-family="'Segoe UI', Tahoma, sans-serif" font-size="9.5">Without this rule, YABE sends Who-Is and gets no answer.</text>
+
+  <rect x="26" y="138" width="406" height="26" fill="#E4E4E4"/>
+  <g font-family="'Segoe UI', Tahoma, sans-serif" font-size="9.5" fill="#303030">
+    <text x="36" y="155">App</text>
+    <text x="286" y="155" text-anchor="middle">Private networks</text>
+    <text x="386" y="155" text-anchor="middle">Public networks</text>
+  </g>
+
+  <rect x="26" y="164" width="406" height="34" fill="#FFFFFF"/>
+  <text x="36" y="185" fill="#1A1A1A" font-family="'Segoe UI', Tahoma, sans-serif" font-size="10.5">Yabe</text>
+  <rect x="256" y="172" width="14" height="14" rx="2" fill="#0067C0"/>
+  <path d="M259 179 l4 4 l7 -8" fill="none" stroke="#FFFFFF" stroke-width="2"/>
+  <rect x="356" y="172" width="14" height="14" rx="2" fill="#FFFFFF" stroke="#8A8A8A"/>
+
+  <rect x="26" y="198" width="406" height="34" fill="#F7F7F7"/>
+  <text x="36" y="219" fill="#767676" font-family="'Segoe UI', Tahoma, sans-serif" font-size="10.5">Sample Program</text>
+  <rect x="256" y="206" width="14" height="14" rx="2" fill="#FFFFFF" stroke="#B0B0B0"/>
+  <rect x="356" y="206" width="14" height="14" rx="2" fill="#FFFFFF" stroke="#B0B0B0"/>
+
+  <rect x="26" y="242" width="406" height="60" rx="4" fill="#FAFAFA" stroke="#D2D2D2"/>
+  <text x="38" y="264" fill="#3B3B3B" font-family="'Segoe UI', Tahoma, sans-serif" font-size="9.5" font-weight="600">Why the Public column must stay off</text>
+  <text x="38" y="280" fill="#5A5A5A" font-family="'Segoe UI', Tahoma, sans-serif" font-size="9.5">A BMS cable is a private, physically secured network.</text>
+  <text x="38" y="294" fill="#5A5A5A" font-family="'Segoe UI', Tahoma, sans-serif" font-size="9.5">Leaving YABE open to Public networks opens UDP 47808 to all.</text>
+
+  <rect x="26" y="320" width="406" height="76" rx="4" fill="#F0F8F4" stroke="#00b894"/>
+  <text x="38" y="342" fill="#00795C" font-family="'Segoe UI', Tahoma, sans-serif" font-size="9.5" font-weight="600">Confirm the network profile too</text>
+  <text x="38" y="358" fill="#20604F" font-family="'Segoe UI', Tahoma, sans-serif" font-size="9.5">Settings &#8250; Network &amp; internet &#8250; Ethernet</text>
+  <text x="38" y="372" fill="#20604F" font-family="'Segoe UI', Tahoma, sans-serif" font-size="9.5">&#8250; Network profile type = Private</text>
+  <text x="38" y="388" fill="#20604F" font-family="'Segoe UI', Tahoma, sans-serif" font-size="9.5">If it says Public, the private tick is ignored.</text>
+
+  <rect x="26" y="448" width="140" height="26" rx="3" fill="#FFFFFF" stroke="#8A8A8A"/>
+  <text x="96" y="465" text-anchor="middle" fill="#1A1A1A" font-family="'Segoe UI', Tahoma, sans-serif" font-size="9.5">Allow another app&#8230;</text>
+  <rect x="256" y="486" width="76" height="26" rx="3" fill="#FFFFFF" stroke="#8A8A8A"/>
+  <text x="294" y="503" text-anchor="middle" fill="#1A1A1A" font-family="'Segoe UI', Tahoma, sans-serif" font-size="9.5">Cancel</text>
+  <rect x="340" y="486" width="92" height="26" rx="3" fill="#FFFFFF" stroke="#8A8A8A"/>
+  <text x="386" y="503" text-anchor="middle" fill="#1A1A1A" font-family="'Segoe UI', Tahoma, sans-serif" font-size="9.5">Settings</text>
+
+  <!-- ══ Panel B: Inbound rule detail ══ -->
+  <rect x="462" y="36" width="444" height="492" rx="6" fill="#F0F0F0" stroke="#A8A8A8"/>
+  <rect x="462" y="36" width="444" height="30" fill="#F5F5F5"/>
+  <line x1="462" y1="66" x2="906" y2="66" stroke="#D2D2D2"/>
+  <text x="474" y="56" fill="#1A1A1A" font-family="'Segoe UI', Tahoma, sans-serif" font-size="10">New Inbound Rule Wizard</text>
+
+  <text x="478" y="94" fill="#3B3B3B" font-family="'Segoe UI', Tahoma, sans-serif" font-size="11" font-weight="600">Custom rule &#8212; what each step must contain</text>
+
+  <rect x="478" y="106" width="412" height="266" rx="4" fill="#FFFFFF" stroke="#D0D0D0"/>
+  <g font-family="'Segoe UI', Tahoma, sans-serif" font-size="9.5" fill="#606060">
+    <text x="492" y="130">Action</text>
+    <text x="492" y="168">Program</text>
+    <text x="492" y="206">Protocol</text>
+    <text x="492" y="244">Local port</text>
+    <text x="492" y="282">Remote IP address</text>
+    <text x="492" y="320">Profiles</text>
+    <text x="492" y="358">Description</text>
+  </g>
+  <g stroke="#EDEDED">
+    <line x1="484" y1="140" x2="884" y2="140"/><line x1="484" y1="178" x2="884" y2="178"/>
+    <line x1="484" y1="216" x2="884" y2="216"/><line x1="484" y1="254" x2="884" y2="254"/>
+    <line x1="484" y1="292" x2="884" y2="292"/><line x1="484" y1="330" x2="884" y2="330"/>
+  </g>
+  <g fill="#1A1A1A" font-family="'Segoe UI', Tahoma, sans-serif" font-size="10">
+    <text x="650" y="130">Allow the connection</text>
+    <text x="650" y="168" font-family="Consolas, monospace" font-size="9.5">…\Yabe\Yabe.exe</text>
+    <text x="650" y="206">UDP</text>
+    <text x="650" y="244" font-family="Consolas, monospace" fill="#0067C0" font-weight="600">47808</text>
+    <text x="650" y="282" font-family="Consolas, monospace">10.20.30.0/24</text>
+    <text x="650" y="320">Domain, Private, Public</text>
+    <text x="650" y="358">RG point scan &#8212; read only</text>
+  </g>
+
+  <rect x="478" y="384" width="412" height="74" rx="4" fill="#F0F8F4" stroke="#00b894"/>
+  <text x="490" y="406" fill="#00795C" font-family="'Segoe UI', Tahoma, sans-serif" font-size="9.5" font-weight="600">Same port, both directions</text>
+  <text x="490" y="422" fill="#20604F" font-family="'Segoe UI', Tahoma, sans-serif" font-size="9.5">BACnet/IP discovery is a UDP broadcast on 47808 and every</text>
+  <text x="490" y="436" fill="#20604F" font-family="'Segoe UI', Tahoma, sans-serif" font-size="9.5">reply comes back as a unicast to that same port. Filter it and</text>
+  <text x="490" y="450" fill="#20604F" font-family="'Segoe UI', Tahoma, sans-serif" font-size="9.5">you will see a healthy network and still get an empty list.</text>
+
+  <rect x="478" y="470" width="412" height="42" rx="4" fill="#1A1A1A"/>
+  <text x="490" y="488" fill="#8F9A95" font-family="'Segoe UI', Tahoma, sans-serif" font-size="8.5">Equivalent, in an admin PowerShell:</text>
+  <text x="490" y="504" fill="#00e696" font-family="Consolas, monospace" font-size="8.5">netsh advfirewall firewall add rule name="YABE BACnet UDP 47808" dir=in</text>
+
+  <!-- ══ step badges ══ -->
+  <g font-family="'Segoe UI', Tahoma, sans-serif" font-size="11" font-weight="700" text-anchor="middle">
+    <circle cx="182" cy="461" r="11" fill="#00e696"/><text x="182" y="465" fill="#04140F">1</text>
+    <circle cx="238" cy="179" r="11" fill="#00e696"/><text x="238" y="183" fill="#04140F">2</text>
+    <circle cx="628" cy="242" r="11" fill="#00e696"/><text x="628" y="246" fill="#04140F">3</text>
+    <circle cx="628" cy="340" r="11" fill="#00e696"/><text x="628" y="344" fill="#04140F">4</text>
+  </g>
+
+  <text x="20" y="552" fill="#5C6763" font-family="'Segoe UI', Tahoma, sans-serif" font-size="10">示意图 (schematic) — redrawn from Windows 11 Defender Firewall dialogs; every field name is the real one.</text>
+</svg>

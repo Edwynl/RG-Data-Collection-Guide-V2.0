@@ -1343,6 +1343,42 @@ body::before {
     margin-top: 1px;
 }
 
+/* ── Tutorial schematics (redrawn diagrams, click to open full size) ── */
+.guide-figure {
+    margin: 0 0 22px;
+}
+
+.guide-figure-link {
+    display: block;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.guide-figure img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    background: #0A0C0B;
+    transition: border-color var(--transition-fast);
+}
+
+.guide-figure-link:hover img {
+    border-color: rgba(0, 230, 150, 0.4);
+}
+
+.guide-figure figcaption {
+    margin-top: 9px;
+    color: var(--text-muted);
+    font-size: 0.76rem;
+    line-height: 1.55;
+}
+
+.guide-figure figcaption em {
+    color: var(--text-secondary);
+}
+
 .modal-content ul.guide-refs li {
     display: block;
     padding: 9px 0;

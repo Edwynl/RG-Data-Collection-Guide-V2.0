@@ -1,0 +1,145 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 560" width="920" height="560" role="img" aria-label="Windows 10 route: ncsi.cpl adapter list, right-click Properties, and the IPv4 properties dialog with a static address">
+  <rect x="0" y="0" width="920" height="560" fill="#0A0C0B"/>
+
+  <!-- ══ LEFT: Network Connections (ncsi.cpl) ══ -->
+  <rect x="14" y="44" width="420" height="476" rx="6" fill="#F0F0F0" stroke="#A8A8A8"/>
+  <rect x="14" y="44" width="420" height="30" fill="#F5F5F5"/>
+  <line x1="14" y1="74" x2="434" y2="74" stroke="#D2D2D2"/>
+  <text x="28" y="64" fill="#1A1A1A" font-family="'Segoe UI', Tahoma, sans-serif" font-size="11.5">Network Connections</text>
+  <path d="M382 62 h10" stroke="#5A5A5A"/><rect x="402" y="55" width="9" height="9" fill="none" stroke="#5A5A5A"/>
+  <path d="M422 55 l9 9 M431 55 l-9 9" stroke="#5A5A5A"/>
+
+  <rect x="14" y="74" width="420" height="22" fill="#F0F0F0"/>
+  <g font-family="'Segoe UI', Tahoma, sans-serif" font-size="10" fill="#1A1A1A">
+    <text x="28" y="89">File</text><text x="56" y="89">Action</text><text x="96" y="89">View</text><text x="130" y="89">Help</text>
+  </g>
+
+  <rect x="22" y="102" width="404" height="300" fill="#FFFFFF" stroke="#CFCFCF"/>
+
+  <!-- Ethernet row -->
+  <rect x="22" y="102" width="404" height="104" fill="#F7FAFD"/>
+  <rect x="22" y="102" width="404" height="104" fill="none" stroke="#C9DBF0"/>
+  <rect x="34" y="116" width="22" height="16" rx="2" fill="none" stroke="#5A5A5A"/>
+  <text x="40" y="128" fill="#5A5A5A" font-family="'Segoe UI', sans-serif" font-size="8">LAN</text>
+  <text x="66" y="126" fill="#1A1A1A" font-family="'Segoe UI', Tahoma, sans-serif" font-size="11" font-weight="600">Ethernet</text>
+  <g font-family="'Segoe UI', Tahoma, sans-serif" font-size="9.5" fill="#404040">
+    <text x="66" y="144">Media State: Enabled</text>
+    <text x="66" y="160">IPv4 address: 169.254.11.23</text>
+    <text x="66" y="176">Prefix length: 16 — Windows invented this</text>
+  </g>
+  <rect x="60" y="182" width="212" height="16" rx="3" fill="#FDECEA"/>
+  <text x="66" y="194" fill="#B32218" font-family="'Segoe UI', Tahoma, sans-serif" font-size="9">APIPA — no DHCP server on the BMS net</text>
+
+  <!-- Wi-Fi row -->
+  <rect x="34" y="222" width="22" height="16" rx="2" fill="none" stroke="#5A5A5A"/>
+  <text x="66" y="232" fill="#1A1A1A" font-family="'Segoe UI', Tahoma, sans-serif" font-size="11" font-weight="600">Wi-Fi</text>
+  <g font-family="'Segoe UI', Tahoma, sans-serif" font-size="9.5" fill="#404040">
+    <text x="66" y="250">Media State: Enabled</text>
+    <text x="66" y="266">IPv4 address: 192.168.1.42 — Default gateway: 192.168.1.1</text>
+  </g>
+  <rect x="60" y="274" width="242" height="16" rx="3" fill="#FFF6E0"/>
+  <text x="66" y="286" fill="#8A5A00" font-family="'Segoe UI', Tahoma, sans-serif" font-size="9">Office network — switch off before you scan</text>
+
+  <!-- Bluetooth row -->
+  <rect x="34" y="308" width="22" height="16" rx="2" fill="none" stroke="#9A9A9A"/>
+  <text x="66" y="318" fill="#5A5A5A" font-family="'Segoe UI', Tahoma, sans-serif" font-size="11">Bluetooth Network Connection</text>
+  <text x="66" y="336" fill="#767676" font-family="'Segoe UI', Tahoma, sans-serif" font-size="9.5">Media disconnected</text>
+
+  <!-- right-click menu -->
+  <rect x="236" y="344" width="168" height="160" fill="#000000" opacity="0.18"/>
+  <rect x="232" y="340" width="168" height="160" fill="#FFFFFF" stroke="#C0C0C0"/>
+  <g font-family="'Segoe UI', Tahoma, sans-serif" font-size="9.5" fill="#1A1A1A">
+    <text x="242" y="358">Open in File Explorer</text>
+    <text x="242" y="377">Disable</text>
+    <text x="242" y="396">Diagnose</text>
+    <line x1="240" y1="404" x2="392" y2="404" stroke="#E0E0E0"/>
+    <text x="242" y="421">Update Driver...</text>
+    <text x="242" y="440">Rename</text>
+    <text x="242" y="459">Delete</text>
+    <line x1="240" y1="466" x2="392" y2="466" stroke="#E0E0E0"/>
+    <rect x="233" y="470" width="166" height="21" fill="#E5EFFA"/>
+    <text x="242" y="485" font-weight="600">Properties</text>
+  </g>
+
+  <!-- footer hints -->
+  <rect x="22" y="410" width="404" height="0" fill="none"/>
+  <text x="28" y="424" fill="#3B3B3B" font-family="'Segoe UI', Tahoma, sans-serif" font-size="10" font-weight="600">Control Panel &#8250; Network and Internet</text>
+  <text x="28" y="442" fill="#3B3B3B" font-family="'Segoe UI', Tahoma, sans-serif" font-size="10">&#8250; Network Connections (this window)</text>
+  <text x="28" y="466" fill="#00795C" font-family="'Segoe UI', Tahoma, sans-serif" font-size="10" font-weight="600">Right-click Ethernet &#8250; Properties &#8250; IPv4</text>
+  <text x="28" y="500" fill="#5A5A5A" font-family="'Segoe UI', Tahoma, sans-serif" font-size="9.5">Admin rights not required for an Ethernet adapter.</text>
+  <rect x="22" y="508" width="404" height="1" fill="#C8C8C8"/>
+
+  <!-- ══ RIGHT: IPv4 Properties dialog ══ -->
+  <rect x="446" y="40" width="462" height="484" rx="6" fill="#000000" opacity="0.35"/>
+  <rect x="450" y="36" width="458" height="484" rx="6" fill="#F0F0F0" stroke="#A8A8A8"/>
+  <rect x="450" y="36" width="458" height="30" fill="#F5F5F5"/>
+  <line x1="450" y1="66" x2="908" y2="66" stroke="#D2D2D2"/>
+  <text x="464" y="56" fill="#1A1A1A" font-family="'Segoe UI', Tahoma, sans-serif" font-size="11">Internet Protocol Version 4 (TCP/IPv4) Properties</text>
+  <path d="M866 54 h10" stroke="#5A5A5A"/><rect x="886" y="47" width="9" height="9" fill="none" stroke="#5A5A5A"/>
+  <path d="M906 47 l9 9 M915 47 l-9 9" stroke="#5A5A5A"/>
+
+  <!-- tabs -->
+  <rect x="450" y="66" width="458" height="24" fill="#E8E8E8"/>
+  <path d="M462 90 v-16 a4 4 0 0 1 4 -4 h56 a4 4 0 0 1 4 4 v16 z" fill="#F0F0F0" stroke="#B8B8B8"/>
+  <text x="494" y="85" text-anchor="middle" fill="#1A1A1A" font-family="'Segoe UI', Tahoma, sans-serif" font-size="9.5" font-weight="600">General</text>
+  <g font-family="'Segoe UI', Tahoma, sans-serif" font-size="9.5" fill="#404040">
+    <text x="540" y="85">Advanced</text><text x="600" y="85">DNS</text><text x="634" y="85">Routes</text><text x="678" y="85">WINS</text>
+  </g>
+
+  <!-- auto radios -->
+  <circle cx="472" cy="112" r="6.5" fill="#FFFFFF" stroke="#5A5A5A" stroke-width="1.2"/>
+  <circle cx="472" cy="112" r="3" fill="#5A5A5A"/>
+  <text x="488" y="116" fill="#1A1A1A" font-family="'Segoe UI', Tahoma, sans-serif" font-size="10">Obtain an IP address automatically</text>
+  <circle cx="472" cy="138" r="6.5" fill="#FFFFFF" stroke="#5A5A5A" stroke-width="1.2"/>
+  <circle cx="472" cy="138" r="3" fill="#5A5A5A"/>
+  <text x="488" y="142" fill="#1A1A1A" font-family="'Segoe UI', Tahoma, sans-serif" font-size="10">Obtain a DNS server address automatically</text>
+
+  <!-- manual IP group -->
+  <rect x="466" y="158" width="426" height="132" rx="4" fill="#FAFAFA" stroke="#C8C8C8"/>
+  <circle cx="484" cy="178" r="6.5" fill="#FFFFFF" stroke="#0067C0" stroke-width="1.8"/>
+  <circle cx="484" cy="178" r="3" fill="#0067C0"/>
+  <text x="500" y="182" fill="#1A1A1A" font-family="'Segoe UI', Tahoma, sans-serif" font-size="10" font-weight="600">Use the following IP address:</text>
+  <g font-family="'Segoe UI', Tahoma, sans-serif" font-size="9.5" fill="#303030">
+    <text x="510" y="208">IP address:</text>
+    <text x="510" y="234">Subnet mask:</text>
+    <text x="510" y="260">Default gateway:</text>
+  </g>
+  <rect x="596" y="194" width="200" height="24" rx="3" fill="#FFFFFF" stroke="#0067C0" stroke-width="1.6"/>
+  <text x="604" y="211" fill="#1A1A1A" font-family="Consolas, monospace" font-size="10.5">10.20.30.200</text>
+  <rect x="596" y="220" width="200" height="24" rx="3" fill="#FFFFFF" stroke="#8A8A8A"/>
+  <text x="604" y="237" fill="#1A1A1A" font-family="Consolas, monospace" font-size="10.5">255.255.255.0</text>
+  <rect x="596" y="246" width="200" height="24" rx="3" fill="#FFFFFF" stroke="#8A8A8A" stroke-dasharray="3 3"/>
+  <text x="604" y="263" fill="#9A9A9A" font-family="'Segoe UI', Tahoma, sans-serif" font-size="9.5">blank — this is the setting people get wrong</text>
+
+  <!-- DNS group -->
+  <rect x="466" y="300" width="426" height="120" rx="4" fill="#FAFAFA" stroke="#C8C8C8"/>
+  <circle cx="484" cy="320" r="6.5" fill="#FFFFFF" stroke="#5A5A5A" stroke-width="1.2"/>
+  <text x="500" y="324" fill="#1A1A1A" font-family="'Segoe UI', Tahoma, sans-serif" font-size="10">Use the following DNS server addresses:</text>
+  <g font-family="'Segoe UI', Tahoma, sans-serif" font-size="9.5" fill="#303030">
+    <text x="510" y="352">Preferred DNS server:</text>
+    <text x="510" y="378">Alternate DNS server:</text>
+  </g>
+  <rect x="596" y="338" width="200" height="24" rx="3" fill="#FFFFFF" stroke="#8A8A8A" stroke-dasharray="3 3"/>
+  <rect x="596" y="364" width="200" height="24" rx="3" fill="#FFFFFF" stroke="#8A8A8A" stroke-dasharray="3 3"/>
+
+  <text x="466" y="444" fill="#606060" font-family="'Segoe UI', Tahoma, sans-serif" font-size="9">Validate settings at exit: leave as it is.</text>
+  <text x="466" y="460" fill="#606060" font-family="'Segoe UI', Tahoma, sans-serif" font-size="9">WINS tab: leave empty — not used by BACnet.</text>
+
+  <!-- buttons -->
+  <rect x="742" y="478" width="66" height="28" rx="3" fill="#FFFFFF" stroke="#8A8A8A"/>
+  <text x="775" y="497" text-anchor="middle" fill="#1A1A1A" font-family="'Segoe UI', Tahoma, sans-serif" font-size="10">Cancel</text>
+  <rect x="816" y="478" width="66" height="28" rx="3" fill="#FFFFFF" stroke="#8A8A8A"/>
+  <text x="849" y="497" text-anchor="middle" fill="#1A1A1A" font-family="'Segoe UI', Tahoma, sans-serif" font-size="10" font-weight="600">OK</text>
+
+  <!-- ══ step badges ══ -->
+  <g font-family="'Segoe UI', Tahoma, sans-serif" font-size="11" font-weight="700" text-anchor="middle">
+    <circle cx="406" cy="481" r="11" fill="#00e696"/><text x="406" y="485" fill="#04140F">1</text>
+    <circle cx="466" cy="178" r="11" fill="#00e696"/><text x="466" y="182" fill="#04140F">2</text>
+    <circle cx="580" cy="206" r="11" fill="#00e696"/><text x="580" y="210" fill="#04140F">3</text>
+    <circle cx="580" cy="232" r="11" fill="#00e696"/><text x="580" y="236" fill="#04140F">4</text>
+    <circle cx="580" cy="258" r="11" fill="#00e696"/><text x="580" y="262" fill="#04140F">5</text>
+    <circle cx="849" cy="464" r="11" fill="#00e696"/><text x="849" y="468" fill="#04140F">6</text>
+  </g>
+
+  <text x="20" y="550" fill="#5C6763" font-family="'Segoe UI', Tahoma, sans-serif" font-size="10">示意图 (schematic) — redrawn from the classic Windows 10 adapter dialogs; field order is exact, spacing is simplified.</text>
+</svg>

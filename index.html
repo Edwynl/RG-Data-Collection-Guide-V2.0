@@ -10,7 +10,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="styles.css?v=2.1">
+    <link rel="stylesheet" href="styles.css?v=2.2">
 </head>
 
 <body>
@@ -395,10 +395,24 @@
         <section id="bms" class="view">
             <div class="hero-section">
                 <h1 class="section-title">BMS Export Guide</h1>
-                <p class="section-desc">Select your BMS system below to view step-by-step export procedures.</p>
+                <p class="section-desc">Start with the network setup below &mdash; it is vendor-neutral and everything
+                    else depends on it. Then select your BMS system to view step-by-step export procedures.</p>
             </div>
 
             <div class="grid">
+                <div class="glass-card bms-card" style="padding: 24px; cursor: pointer; grid-column: 1 / -1;"
+                    data-bms="networkscan">
+                    <div class="badge badge-essential" style="margin-bottom: 12px; display: inline-block;">Start here ·
+                        Any brand</div>
+                    <h3 class="accent-text">Connect &amp; Scan — Gateway IP + YABE Point Scan</h3>
+                    <p style="color: var(--text-muted); font-size: 0.9rem; margin: 12px 0;">
+                        For any BACnet site, regardless of brand: put your laptop&rsquo;s IP into the BMS gateway range on
+                        Windows 10/11, then use YABE (Yet Another BACnet Explorer) to discover the devices and capture the
+                        point list. Covers BACnet/IP and MS/TP/RS-485 wiring, firewall setup, a full troubleshooting table
+                        and nine setup diagrams.
+                    </p>
+                    <div class="click-hint" style="font-size: 0.7rem; opacity: 0.5;">Click for the walkthrough →</div>
+                </div>
                 <div class="glass-card bms-card" style="padding: 24px; cursor: pointer;" data-bms="honeywell">
                     <h3 class="accent-text">Honeywell EBI</h3>
                     <p style="color: var(--text-muted); font-size: 0.9rem; margin: 12px 0;">Point list &amp; trend
@@ -816,7 +830,7 @@
         </div>
     </div>
 
-    <script src="app.js?v=2.1"></script>
+    <script src="app.js?v=2.2"></script>
 </body>
 
 </html>
