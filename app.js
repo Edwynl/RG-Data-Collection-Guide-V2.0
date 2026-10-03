@@ -51,7 +51,7 @@ document.addEventListener('DOMContentLoaded', () => {
         networkscan: {
             title: "Connect &amp; Scan — Set Your IP into the BMS Range, Then Scan with YABE",
             wide: true,
-            footer: "Send the device sheet + object list to data@retragreen.com · Questions: support@retragreen.com",
+            footer: "Send the device sheet + object list to edwyn@retragreen.com.au",
             blocks: [
                 {
                     type: 'lead',
@@ -493,7 +493,7 @@ document.addEventListener('DOMContentLoaded', () => {
         honeywell: {
             title: "Honeywell EBI — Point List &amp; Trend Export",
             wide: true,
-            footer: "Send the device sheet + point list to data@retragreen.com · Questions: support@retragreen.com",
+            footer: "Send the device sheet + point list to edwyn@retragreen.com.au",
             blocks: [
                 {
                     type: 'lead',
@@ -709,7 +709,7 @@ document.addEventListener('DOMContentLoaded', () => {
         siemens: {
             title: "Siemens Desigo CC — Point List &amp; Trend Export",
             wide: true,
-            footer: "Send the device sheet + point list to data@retragreen.com · Questions: support@retragreen.com",
+            footer: "Send the device sheet + point list to edwyn@retragreen.com.au",
             blocks: [
                 {
                     type: 'lead',
@@ -941,7 +941,7 @@ document.addEventListener('DOMContentLoaded', () => {
         jci: {
             title: "Johnson Controls Metasys — BACnet Point List Export",
             wide: true,
-            footer: "Send the device sheet + point list to data@retragreen.com · Questions: support@retragreen.com",
+            footer: "Send the device sheet + point list to edwyn@retragreen.com.au",
             blocks: [
                 {
                     type: 'lead',
@@ -1203,7 +1203,7 @@ document.addEventListener('DOMContentLoaded', () => {
         schneider: {
             title: "Schneider EcoStruxure Building Operation — Point List &amp; Trend Export",
             wide: true,
-            footer: "Send the device sheet + point list to data@retragreen.com · Questions: support@retragreen.com",
+            footer: "Send the device sheet + point list to edwyn@retragreen.com.au",
             blocks: [
                 {
                     type: 'lead',
@@ -1468,7 +1468,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const body = data.blocks
             ? renderBlocks(data.blocks)
             : `<ol>${(data.steps || []).map(step => `<li>${step}</li>`).join('')}</ol>`;
-        const footer = data.footer || 'Need help? Contact support@retragreen.com';
+        const footer = data.footer || 'Need help? Contact edwyn@retragreen.com.au';
         return `<h2 class="accent-text">${data.title}</h2>${body}<div class="modal-footer">${footer}</div>`;
     }
 
@@ -1651,7 +1651,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return `
             <h2 class="accent-text">${data.title}</h2>
             ${sectionsHtml}
-            <div class="modal-footer">Fill in the Data Collection Form (Sheet corresponds to this section) and email to data@retragreen.com</div>
+            <div class="modal-footer">Fill in the Data Collection Form (Sheet corresponds to this section) and email to edwyn@retragreen.com.au</div>
         `;
     }
 
@@ -1705,7 +1705,7 @@ document.addEventListener('DOMContentLoaded', () => {
         },
         email: {
             title: 'Generate Email — Output',
-            items: ['Auto-compiled data package summary', 'Attached: completed Data Collection Form', 'Attached: historical CSV files (zipped)', 'Send to: data@retragreen.com']
+            items: ['Auto-compiled data package summary', 'Attached: completed Data Collection Form', 'Attached: historical CSV files (zipped)', 'Send to: edwyn@retragreen.com.au']
         },
     };
 
